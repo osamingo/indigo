@@ -1,17 +1,10 @@
 package indigo
 
-import (
-	"errors"
-	"math/big"
-)
+import "errors"
 
 const alphanumeric = "123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ"
 
-var (
-	zero      = big.NewInt(0)
-	radix     = big.NewInt(58)
-	decodeMap = make([]int64, 256)
-)
+var decodeMap = make([]int64, 256)
 
 func init() {
 	for i := range decodeMap {
@@ -29,20 +22,17 @@ func EncodeBase58(u uint64) string {
 		return "1"
 	}
 
-	n := new(big.Int).SetUint64(u)
-
-	mod := new(big.Int)
-	dst := make([]byte, 0, len(n.Bytes()))
-	for n.Cmp(zero) > 0 {
-		n.DivMod(n, radix, mod)
-		dst = append(dst, alphanumeric[mod.Int64()])
+	d := make([]byte, 0, 10)
+	for u > 0 {
+		d = append(d, alphanumeric[u%58])
+		u = u / 58
 	}
 
-	for i, j := n.BitLen(), len(dst)-1; i < j; i, j = i+1, j-1 {
-		dst[i], dst[j] = dst[j], dst[i]
+	for i, j := 0, len(d)-1; i < j; i, j = i+1, j-1 {
+		d[i], d[j] = d[j], d[i]
 	}
 
-	return string(dst)
+	return string(d)
 }
 
 // DecodeBase58 returns decoded unsigned int64 by Base58.
@@ -52,13 +42,13 @@ func DecodeBase58(s string) (uint64, error) {
 		return 0, errors.New("indigo: source should not be empty")
 	}
 
-	n := new(big.Int)
-	u := int64(0)
+	n := uint64(0)
 	for i := range s {
-		if u = decodeMap[s[i]]; u < 0 {
+		u := decodeMap[s[i]]
+		if u < 0 {
 			return 0, errors.New("indigo: invalid character = " + string(s[i]))
 		}
-		n.Add(n.Mul(n, radix), big.NewInt(u))
+		n = n*58 + uint64(u)
 	}
-	return n.Uint64(), nil
+	return n, nil
 }
