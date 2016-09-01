@@ -7,7 +7,11 @@ import (
 
 const alphanumeric = "123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ"
 
-var decodeMap [256]int64
+var (
+	zero      = big.NewInt(0)
+	radix     = big.NewInt(58)
+	decodeMap = make([]int64, 256)
+)
 
 func init() {
 	for i := range decodeMap {
@@ -28,8 +32,6 @@ func EncodeBase58(u uint64) string {
 	n := new(big.Int).SetUint64(u)
 
 	mod := new(big.Int)
-	zero := big.NewInt(0)
-	radix := big.NewInt(58)
 	dst := make([]byte, 0, len(n.Bytes()))
 	for n.Cmp(zero) > 0 {
 		n.DivMod(n, radix, mod)
@@ -51,7 +53,6 @@ func DecodeBase58(s string) (uint64, error) {
 	}
 
 	n := new(big.Int)
-	radix := big.NewInt(58)
 	u := int64(0)
 	for i := range s {
 		if u = decodeMap[s[i]]; u < 0 {

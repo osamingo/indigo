@@ -36,7 +36,7 @@ func NextID() (string, error) {
 	return EncodeBase58(n), nil
 }
 
-// Decompose returns a set of Sonyflake ID parts.
+// Decompose returns a set of sonyflake ID parts.
 func Decompose(id string) (map[string]uint64, error) {
 	b, err := DecodeBase58(id)
 	if err != nil {
