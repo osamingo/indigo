@@ -26,6 +26,8 @@ var tc = map[uint64]string{
 	16777216:   "2tZhm",
 	134217728:  "cRUfL",
 	1073741824: "2CTd35",
+	// uint64: MAX_VALUE
+	18446744073709551615: "JPwcyDCgEup",
 }
 
 func TestEncodeBase58(t *testing.T) {
