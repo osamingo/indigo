@@ -9,12 +9,12 @@ import (
 
 var tc = map[uint64]string{
 	0:           "1",
-	32:          "Z",
+	32:          "y",
 	64:          "27",
-	512:         "9q",
-	1024:        "Jf",
-	16777216:    "2UzHM",
-	68719476736: "2ohWHHR",
+	512:         "9Q",
+	1024:        "iE",
+	16777216:    "2tZhm",
+	68719476736: "2NGvhhq",
 }
 
 func TestEncodeBase58(t *testing.T) {

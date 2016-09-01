@@ -5,7 +5,7 @@ import (
 	"math/big"
 )
 
-const alphanumeric = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
+const alphanumeric = "123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ"
 
 var decodeMap [256]int64
 
