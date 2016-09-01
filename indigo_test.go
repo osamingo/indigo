@@ -4,6 +4,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -21,19 +22,20 @@ func TestIndigo(t *testing.T) {
 	id, err = NextID()
 	require.NoError(t, err)
 	require.NotEmpty(t, id)
+}
 
-	m, err := Decompose(id)
+func TestDecompose(t *testing.T) {
+
+	m, err := Decompose("KGuFE14P")
 	require.NoError(t, err)
 	require.NotEmpty(t, m)
+	assert.NotEmpty(t, m["id"])
 
 	_, err = Decompose("")
 	require.Error(t, err)
 }
 
 func TestRaceNextID(t *testing.T) {
-
-	New(time.Now(), mid, nil)
-
 	for i := 0; i < 2048; i++ {
 		go func() {
 			id, err := NextID()
@@ -44,9 +46,6 @@ func TestRaceNextID(t *testing.T) {
 }
 
 func BenchmarkNextID(b *testing.B) {
-
-	New(time.Now(), mid, nil)
-
 	b.ReportAllocs()
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
