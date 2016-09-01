@@ -9,6 +9,11 @@ import (
 	"github.com/osamingo/indigo"
 )
 
+func randomMachineID() (uint16, error) {
+	rand.Seed(time.Now().UnixNano())
+	return uint16(rand.Intn(65535)), nil
+}
+
 func main() {
 
 	indigo.New(time.Now(), randomMachineID, nil)
@@ -29,9 +34,4 @@ func main() {
 	}
 
 	wg.Wait()
-}
-
-func randomMachineID() (uint16, error) {
-	rand.Seed(time.Now().UnixNano())
-	return uint16(rand.Intn(65535)), nil
 }
