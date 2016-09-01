@@ -31,6 +31,11 @@ import (
 	"github.com/osamingo/indigo"
 )
 
+func randomMachineID() (uint16, error) {
+	rand.Seed(time.Now().UnixNano())
+	return uint16(rand.Intn(65535)), nil
+}
+
 func main() {
 
 	indigo.New(time.Now(), randomMachineID, nil)
@@ -52,16 +57,11 @@ func main() {
 
 	wg.Wait()
 }
-
-func randomMachineID() (uint16, error) {
-	rand.Seed(time.Now().UnixNano())
-	return uint16(rand.Intn(65535)), nil
-}
 ```
 
 ## Bibliography
 
-- [Sonyflake](https://github.com/sony/sonyflake) - A distributed unique ID generator inspired by Twitter's Snowflake
+- [Sonyflake](https://github.com/sony/sonyflake) - A distributed unique ID generator inspired by Twitter's Snowflake.
 - [Base58](https://en.wikipedia.org/wiki/Base58) - Base58 is a group of binary-to-text encoding schemes used to represent large integers as alphanumeric text.
 
 ## License
