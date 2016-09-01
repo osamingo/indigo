@@ -24,21 +24,17 @@ package main
 
 import (
 	"log"
-	"math/rand"
 	"sync"
 	"time"
 
 	"github.com/osamingo/indigo"
 )
 
-func randomMachineID() (uint16, error) {
-	rand.Seed(time.Now().UnixNano())
-	return uint16(rand.Intn(65535)), nil
-}
+const startedAt = 1472702119
 
 func main() {
 
-	indigo.New(time.Now(), randomMachineID, nil)
+	indigo.New(time.Unix(startedAt, 0), nil, nil)
 
 	wg := sync.WaitGroup{}
 	wg.Add(100)
