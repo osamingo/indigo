@@ -1,0 +1,19 @@
+hash: ef8b207c856a17c957b26afb50be18949e11158e6c7213dd67307bcf1adf698f
+updated: 2016-09-01T12:44:18.734055776+09:00
+imports:
+- name: github.com/sony/sonyflake
+  version: fa881fb1052b152e977c41023052c2f2a1c475e9
+testImports:
+- name: github.com/davecgh/go-spew
+  version: 5215b55f46b2b919f50a1df0eaa5886afe4e3b3d
+  subpackages:
+  - spew
+- name: github.com/pmezard/go-difflib
+  version: d8ed2627bdf02c080bf22230dbb337003b7aba2d
+  subpackages:
+  - difflib
+- name: github.com/stretchr/testify
+  version: d77da356e56a7428ad25149ca77381849a6a5232
+  subpackages:
+  - assert
+  - require

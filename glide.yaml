@@ -1,0 +1,8 @@
+package: .
+import:
+- package: github.com/sony/sonyflake
+testImport:
+- package: github.com/stretchr/testify
+  subpackages:
+  - assert
+  - require
