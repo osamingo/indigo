@@ -31,6 +31,9 @@ func TestIndigo(t *testing.T) {
 }
 
 func TestRaceNextID(t *testing.T) {
+
+	New(time.Now(), mid, nil)
+
 	for i := 0; i < 2048; i++ {
 		go func() {
 			id, err := NextID()
