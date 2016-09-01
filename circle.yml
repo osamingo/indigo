@@ -1,3 +1,9 @@
+dependencies:
+  pre:
+    - go get github.com/Masterminds/glide
+  override:
+    - glide install
+
 test:
   override:
     - go test -race -coverprofile=coverage.txt -covermode=atomic .
