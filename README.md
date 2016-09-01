@@ -1,6 +1,6 @@
 # Indigo
 
-[![CircleCI Status](https://img.shields.io/circleci/project/osamingo/indigo/master.svg)](https://github.com/osamingo/indigo)
+[![CircleCI](https://img.shields.io/circleci/project/osamingo/indigo/master.svg)](https://circleci.com/gh/osamingo/indigo)
 [![codecov](https://codecov.io/gh/osamingo/indigo/branch/master/graph/badge.svg)](https://codecov.io/gh/osamingo/indigo)
 [![Go Report Card](https://goreportcard.com/badge/osamingo/indigo)](https://goreportcard.com/report/osamingo/indigo)
 [![codebeat badge](https://codebeat.co/badges/3885a5d8-7db0-4162-970a-577a1bf54199)](https://codebeat.co/projects/github-com-osamingo-indigo)
@@ -9,7 +9,7 @@
 
 ## About
 
-Unique ID generator using Sonyflake and encoded by Base58.
+A distributed unique ID generator of using Sonyflake and encoded by Base58.
 
 ## Install
 
@@ -58,6 +58,11 @@ func randomMachineID() (uint16, error) {
 	return uint16(rand.Intn(65535)), nil
 }
 ```
+
+## Bibliography
+
+- [Sonyflake](https://github.com/sony/sonyflake) - A distributed unique ID generator inspired by Twitter's Snowflake
+- [Base58](https://en.wikipedia.org/wiki/Base58) - Base58 is a group of binary-to-text encoding schemes used to represent large integers as alphanumeric text.
 
 ## License
 
