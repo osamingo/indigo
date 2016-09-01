@@ -33,3 +33,23 @@ func TestDecodeBase58(t *testing.T) {
 	_, err := DecodeBase58("0")
 	require.Error(t, err)
 }
+
+func BenchmarkEncodeBase58(b *testing.B) {
+	b.ReportAllocs()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		for i := range tc {
+			EncodeBase58(i)
+		}
+	}
+}
+
+func BenchmarkDecodeBase58(b *testing.B) {
+	b.ReportAllocs()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		for i := range tc {
+			DecodeBase58(tc[i])
+		}
+	}
+}
