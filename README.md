@@ -11,6 +11,9 @@
 
 A distributed unique ID generator of using Sonyflake and encoded by Base58.
 
+- ID max length is 11 characters by unsigned int64 max value.
+- Default characters: `123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ`
+
 ## Install
 
 ```bash
@@ -44,7 +47,6 @@ func main() {
 			id, err := indigo.NextID()
 			if err != nil {
 				log.Fatalln(err)
-
 			} else {
 				log.Println("id:", id)
 			}
