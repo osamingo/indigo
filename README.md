@@ -57,6 +57,17 @@ func main() {
 }
 ```
 
+## Benchmark
+
+```
+# MacbookPro 15
+# CPU: Core i7 2.6GHz, Memory: 16GB
+
+BenchmarkEncodeBase58-8	10000000       	       147 ns/op       	      46 B/op  	       1 allocs/op
+BenchmarkDecodeBase58-8	 5000000       	       260 ns/op       	       0 B/op  	       0 allocs/op
+BenchmarkNextID-8      	   50000       	     38975 ns/op       	       8 B/op  	       1 allocs/op
+```
+
 ## Bibliography
 
 - [Sonyflake](https://github.com/sony/sonyflake) - A distributed unique ID generator inspired by Twitter's Snowflake.
