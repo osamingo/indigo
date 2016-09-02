@@ -22,7 +22,6 @@ func main() {
 			id, err := indigo.NextID()
 			if err != nil {
 				log.Fatalln(err)
-
 			} else {
 				log.Println("id:", id)
 			}
