@@ -25,6 +25,16 @@ func defineDecodeMap() {
 	}
 }
 
+// SetBase58Characters changes characters of Base58.
+func SetBase58Characters(chars string) error {
+	if len(chars) != base58 {
+		return errors.New("indigo: charactors must be 58 length")
+	}
+	characters = chars
+	defineDecodeMap()
+	return nil
+}
+
 // EncodeBase58 returns encoded string by Base58.
 func EncodeBase58(u uint64) string {
 

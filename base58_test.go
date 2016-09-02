@@ -19,6 +19,27 @@ var tc = map[uint64]string{
 	math.MaxUint64: "JPwcyDCgEup",
 }
 
+
+func TestSetBase58Characters(t *testing.T) {
+
+	orig := characters
+
+	err := SetBase58Characters("")
+	require.Error(t, err)
+
+	err = SetBase58Characters("123")
+	require.Error(t, err)
+
+	bc := "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
+	err = SetBase58Characters(bc)
+	require.NoError(t, err)
+	assert.Equal(t, bc, characters)
+
+	err = SetBase58Characters(orig)
+	require.NoError(t, err)
+	assert.Equal(t, orig, characters)
+}
+
 func TestEncodeBase58(t *testing.T) {
 	for k, v := range tc {
 		assert.Equal(t, v, EncodeBase58(k))
