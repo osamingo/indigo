@@ -19,7 +19,6 @@ var tc = map[uint64]string{
 	math.MaxUint64: "JPwcyDCgEup",
 }
 
-
 func TestSetBase58Characters(t *testing.T) {
 
 	orig := characters
