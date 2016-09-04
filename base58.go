@@ -28,7 +28,7 @@ func defineDecodeMap() {
 // SetBase58Characters changes characters of Base58.
 func SetBase58Characters(chars string) error {
 	if len(chars) != base58 {
-		return errors.New("indigo: charactors must be 58 length")
+		return errors.New("indigo: characters must be 58 length")
 	}
 	characters = chars
 	defineDecodeMap()
