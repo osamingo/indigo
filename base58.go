@@ -9,7 +9,7 @@ const base58 = 58
 
 var (
 	decodeMap  = make([]int64, 256)
-	characters = "123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ"
+	characters = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
 )
 
 func init() {

@@ -12,11 +12,11 @@ import (
 
 var tc = map[uint64]string{
 	0:              "1",
-	57:             "Z",
-	math.MaxUint8:  "5p",
-	math.MaxUint16: "ktV",
-	math.MaxUint32: "7xwQ9g",
-	math.MaxUint64: "JPwcyDCgEup",
+	57:             "z",
+	math.MaxUint8:  "5Q",
+	math.MaxUint16: "LUv",
+	math.MaxUint32: "7YXq9G",
+	math.MaxUint64: "jpXCZedGfVQ",
 }
 
 func TestSetBase58Characters(t *testing.T) {
