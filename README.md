@@ -12,7 +12,7 @@
 A distributed unique ID generator of using Sonyflake and encoded by Base58.
 
 - ID max length is 11 characters by unsigned int64 max value.
-- Default characters: `123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ`
+- Default characters: `123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz`
 
 ## Install
 
@@ -60,8 +60,9 @@ func main() {
 ## Benchmark
 
 ```
-# MacbookPro 15
-# CPU: Core i7 2.6GHz, Memory: 16GB
+# Machine: MacBook Pro (Retina, 15-inch, Late 2013)
+# CPU    : 2.6 GHz Intel Core i7
+# Memory : 16 GB 1600 MHz DDR3
 
 BenchmarkEncodeBase58-8	10000000       	       147 ns/op       	      46 B/op  	       1 allocs/op
 BenchmarkDecodeBase58-8	 5000000       	       260 ns/op       	       0 B/op  	       0 allocs/op
