@@ -9,7 +9,8 @@
 
 ## About
 
-A distributed unique ID generator of using Sonyflake and encoded by Base58.
+A distributed unique ID generator of using Sonyflake and encoded by Base58.  
+Base58 logic is optimized unsigned int64.
 
 - ID max length is 11 characters by unsigned int64 max value.
 - Default characters: `123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz`
@@ -33,7 +34,8 @@ import (
 	"github.com/osamingo/indigo"
 )
 
-const startedAt = 1472702119
+// 2009-11-10 23:00:00 UTC
+const startedAt = 1257894000
 
 func main() {
 
@@ -60,13 +62,13 @@ func main() {
 ## Benchmark
 
 ```
-# Machine: MacBook Pro (Retina, 15-inch, Late 2013)
-# CPU    : 2.6 GHz Intel Core i7
+# Machine: MacBook Pro (Retina, 15-inch, Mid 2015)
+# CPU    : 2.8 GHz Intel Core i7
 # Memory : 16 GB 1600 MHz DDR3
 
-BenchmarkEncodeBase58-8	10000000       	       147 ns/op       	      46 B/op  	       1 allocs/op
-BenchmarkDecodeBase58-8	 5000000       	       260 ns/op       	       0 B/op  	       0 allocs/op
-BenchmarkNextID-8      	   50000       	     38975 ns/op       	       8 B/op  	       1 allocs/op
+BenchmarkEncodeBase58-8    20000000      104 ns/op    46 B/op    1 allocs/op
+BenchmarkDecodeBase58-8    10000000      238 ns/op     0 B/op    0 allocs/op
+BenchmarkNextID-8             50000    38943 ns/op     8 B/op    1 allocs/op
 ```
 
 ## Bibliography
