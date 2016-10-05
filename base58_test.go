@@ -23,18 +23,23 @@ func TestSetBase58Characters(t *testing.T) {
 
 	orig := characters
 
-	err := SetBase58Characters("")
+	err := SetBase58Characters("", false)
 	require.Error(t, err)
 
-	err = SetBase58Characters("123")
+	err = SetBase58Characters("123", false)
 	require.Error(t, err)
 
-	bc := "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
-	err = SetBase58Characters(bc)
+	ripple := "rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz"
+
+	err = SetBase58Characters(ripple, false)
 	require.NoError(t, err)
-	assert.Equal(t, bc, characters)
+	assert.Equal(t, "rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz", characters)
 
-	err = SetBase58Characters(orig)
+	err = SetBase58Characters(ripple, true)
+	require.NoError(t, err)
+	assert.Equal(t, "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz", characters)
+
+	err = SetBase58Characters(orig, true)
 	require.NoError(t, err)
 	assert.Equal(t, orig, characters)
 }

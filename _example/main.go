@@ -8,7 +8,8 @@ import (
 	"github.com/osamingo/indigo"
 )
 
-const startedAt = 1472702119
+// 2009-11-10 23:00:00 UTC
+const startedAt = 1257894000
 
 func main() {
 
