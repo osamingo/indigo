@@ -1,6 +1,9 @@
 package indigo
 
 import (
+	"math/rand"
+	"sort"
+	"sync"
 	"testing"
 	"time"
 
@@ -36,12 +39,54 @@ func TestDecompose(t *testing.T) {
 }
 
 func TestRaceNextID(t *testing.T) {
-	for i := 0; i < 2048; i++ {
+
+	gs := 2048
+
+	var wg sync.WaitGroup
+	wg.Add(gs)
+
+	for i := 0; i < gs; i++ {
 		go func() {
+			defer wg.Done()
 			id, err := NextID()
 			require.NoError(t, err)
 			require.NotEmpty(t, id)
 		}()
+	}
+
+	wg.Wait()
+}
+
+func TestOrderedIDs(t *testing.T) {
+
+	ids := make([]string, 10)
+
+	var err error
+	for i := range ids {
+		time.Sleep(10*time.Millisecond)
+		ids[i], err = NextID()
+		require.NoError(t, err)
+	}
+
+	for i := range ids {
+		j := rand.Intn(i + 1)
+		ids[i], ids[j] = ids[j], ids[i]
+	}
+
+	old := make([]string, 10)
+
+	copy(old, ids)
+	require.Equal(t, old, ids)
+
+	sort.Strings(ids)
+	require.NotEqual(t, old, ids)
+
+	var prev uint64
+	for i := range ids {
+		m, err := Decompose(ids[i])
+		require.NoError(t, err)
+		require.True(t, prev < m["time"])
+		prev = m["time"]
 	}
 }
 

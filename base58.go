@@ -44,7 +44,8 @@ func EncodeBase58(u uint64) string {
 
 	d := make([]byte, 0, binary.MaxVarintLen64)
 	for u > 0 {
-		d, u = append(d, characters[u%base58]), u/base58
+		d = append(d, characters[u%base58])
+		u /= base58
 	}
 
 	for i, j := 0, len(d)-1; i < j; i, j = i+1, j-1 {
