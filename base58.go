@@ -3,6 +3,8 @@ package indigo
 import (
 	"encoding/binary"
 	"errors"
+	"strings"
+	"sort"
 )
 
 const base58 = 58
@@ -26,10 +28,17 @@ func defineDecodeMap() {
 }
 
 // SetBase58Characters changes characters of Base58.
-func SetBase58Characters(chars string) error {
+func SetBase58Characters(chars string, sorting bool) error {
 	if len(chars) != base58 {
 		return errors.New("indigo: characters must be 58 length")
 	}
+
+	if sorting {
+		s := strings.Split(chars, "")
+		sort.Strings(s)
+		chars = strings.Join(s, "")
+	}
+
 	characters = chars
 	defineDecodeMap()
 	return nil
