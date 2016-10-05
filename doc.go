@@ -1,7 +1,7 @@
 /*
-Package indigo generates a distributed unique ID generator of using Sonyflake and encoded by Base58.
+	Package indigo generates a distributed unique ID generator of using Sonyflake and encoded by Base58.
+	Base58 logic is optimized unsigned int64.
 
-ID max length is 11 characters by unsigned int64 max value.
-Default characters: 123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz
+	More information: https://github.com/osamingo/indigo/blob/master/README.md
 */
 package indigo
