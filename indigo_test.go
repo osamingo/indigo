@@ -63,7 +63,7 @@ func TestOrderedIDs(t *testing.T) {
 
 	var err error
 	for i := range ids {
-		time.Sleep(10*time.Millisecond)
+		time.Sleep(10 * time.Millisecond)
 		ids[i], err = NextID()
 		require.NoError(t, err)
 	}

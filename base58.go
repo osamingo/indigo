@@ -3,8 +3,8 @@ package indigo
 import (
 	"encoding/binary"
 	"errors"
-	"strings"
 	"sort"
+	"strings"
 )
 
 const base58 = 58
