@@ -7,11 +7,11 @@ import (
 	"strings"
 )
 
-const base58 = 58
+const fiftyEight = 58
 
 var (
 	decodeMap  = make([]int64, 256)
-	characters = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
+	characters = []byte("123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz")
 )
 
 func init() {
@@ -29,7 +29,7 @@ func defineDecodeMap() {
 
 // SetBase58Characters changes characters of Base58.
 func SetBase58Characters(chars string, sorting bool) error {
-	if len(chars) != base58 {
+	if len(chars) != fiftyEight {
 		return errors.New("indigo: characters must be 58 length")
 	}
 
@@ -39,45 +39,45 @@ func SetBase58Characters(chars string, sorting bool) error {
 		chars = strings.Join(s, "")
 	}
 
-	characters = chars
+	characters = []byte(chars)
 	defineDecodeMap()
 	return nil
 }
 
-// EncodeBase58 returns encoded string by Base58.
-func EncodeBase58(u uint64) string {
+// EncodeBase58 returns encoded byte slice by Base58.
+func EncodeBase58(id uint64) []byte {
 
-	if u == 0 {
+	if id == 0 {
 		return characters[:1]
 	}
 
-	d := make([]byte, 0, binary.MaxVarintLen64)
-	for u > 0 {
-		d = append(d, characters[u%base58])
-		u /= base58
+	bin := make([]byte, 0, binary.MaxVarintLen64)
+	for id > 0 {
+		bin = append(bin, characters[id%fiftyEight])
+		id /= fiftyEight
 	}
 
-	for i, j := 0, len(d)-1; i < j; i, j = i+1, j-1 {
-		d[i], d[j] = d[j], d[i]
+	for i, j := 0, len(bin)-1; i < j; i, j = i+1, j-1 {
+		bin[i], bin[j] = bin[j], bin[i]
 	}
 
-	return string(d)
+	return bin
 }
 
 // DecodeBase58 returns decoded unsigned int64 by Base58.
-func DecodeBase58(s string) (uint64, error) {
+func DecodeBase58(id []byte) (uint64, error) {
 
-	if len(s) == 0 {
+	if len(id) == 0 {
 		return 0, errors.New("indigo: source should not be empty")
 	}
 
-	n := uint64(0)
-	for i := range s {
-		u := decodeMap[s[i]]
+	var n uint64
+	for i := range id {
+		u := decodeMap[id[i]]
 		if u < 0 {
-			return 0, errors.New("indigo: invalid character = " + string(s[i]))
+			return 0, errors.New("indigo: invalid character = " + string(id[i]))
 		}
-		n = n*base58 + uint64(u)
+		n = n*fiftyEight + uint64(u)
 	}
 	return n, nil
 }
