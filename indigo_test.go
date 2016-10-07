@@ -1,6 +1,7 @@
 package indigo
 
 import (
+	"math"
 	"math/rand"
 	"sort"
 	"sync"
@@ -11,34 +12,85 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-var mid = func() (uint16, error) { return 0, nil }
+var mid = func() (uint16, error) { return math.MaxUint16, nil }
 
-func TestIndigo(t *testing.T) {
+func TestNew(t *testing.T) {
 
-	require.Nil(t, s)
+	s := Settings{
+		StartTime:  time.Now(),
+		MachineID:  mid,
+		Characters: "abc",
+	}
 
-	id, err := NextID()
+	g, err := New(s)
 	require.Error(t, err)
 
-	require.NotPanics(t, func() { New(time.Now(), mid, nil) })
+	s.Characters = ""
 
-	id, err = NextID()
+	g, err = New(s)
 	require.NoError(t, err)
-	require.NotEmpty(t, id)
+
+	g, err = New(s)
+	require.NoError(t, err)
+	assert.Equal(t, defaultCharacters, string(g.characters))
+
+	ripple := "rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz"
+
+	s.Characters = ripple
+
+	g, err = New(s)
+	require.NoError(t, err)
+	assert.Equal(t, ripple, string(g.characters))
+
+	s.Sort = true
+
+	g, err = New(s)
+	require.NoError(t, err)
+	assert.Equal(t, defaultCharacters, string(g.characters))
 }
 
-func TestDecompose(t *testing.T) {
+func TestGenerator_NextID(t *testing.T) {
 
-	m, err := Decompose("KGuFE14P")
+	g, err := New(Settings{
+		StartTime: time.Now(),
+		MachineID: mid,
+	})
+	require.NoError(t, err)
+
+	id1, err := g.NextID()
+	require.NoError(t, err)
+	assert.NotEmpty(t, id1)
+
+	id2, err := g.NextID()
+	require.NoError(t, err)
+	assert.NotEmpty(t, id2)
+	assert.NotEqual(t, id1, id2)
+}
+
+func TestGenerator_Decompose(t *testing.T) {
+
+	g, err := New(Settings{
+		StartTime: time.Now(),
+		MachineID: mid,
+	})
+	require.NoError(t, err)
+
+	m, err := g.Decompose("KGuFE14P")
 	require.NoError(t, err)
 	require.NotEmpty(t, m)
 	assert.NotEmpty(t, m["id"])
 
-	_, err = Decompose("")
+	_, err = g.Decompose("")
 	require.Error(t, err)
 }
 
-func TestRaceNextID(t *testing.T) {
+func TestGenerator_NextID_Race(t *testing.T) {
+
+	g, err := New(Settings{
+		StartTime: time.Now(),
+		MachineID: mid,
+	})
+	require.NoError(t, err)
 
 	gs := 2048
 
@@ -48,7 +100,7 @@ func TestRaceNextID(t *testing.T) {
 	for i := 0; i < gs; i++ {
 		go func() {
 			defer wg.Done()
-			id, err := NextID()
+			id, err := g.NextID()
 			require.NoError(t, err)
 			require.NotEmpty(t, id)
 		}()
@@ -57,14 +109,19 @@ func TestRaceNextID(t *testing.T) {
 	wg.Wait()
 }
 
-func TestOrderedIDs(t *testing.T) {
+func TestGenerator_NextID_SortIDs(t *testing.T) {
+
+	g, err := New(Settings{
+		StartTime: time.Now(),
+		MachineID: mid,
+	})
+	require.NoError(t, err)
 
 	ids := make([]string, 10)
 
-	var err error
 	for i := range ids {
 		time.Sleep(10 * time.Millisecond)
-		ids[i], err = NextID()
+		ids[i], err = g.NextID()
 		require.NoError(t, err)
 	}
 
@@ -83,17 +140,23 @@ func TestOrderedIDs(t *testing.T) {
 
 	var prev uint64
 	for i := range ids {
-		m, err := Decompose(ids[i])
+		m, err := g.Decompose(ids[i])
 		require.NoError(t, err)
 		require.True(t, prev < m["time"])
 		prev = m["time"]
 	}
 }
 
-func BenchmarkNextID(b *testing.B) {
+func BenchmarkGenerator_NextID(b *testing.B) {
+
+	g, _ := New(Settings{
+		StartTime: time.Now(),
+		MachineID: mid,
+	})
+
 	b.ReportAllocs()
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		NextID()
+		g.NextID()
 	}
 }

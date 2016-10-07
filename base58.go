@@ -3,81 +3,61 @@ package indigo
 import (
 	"encoding/binary"
 	"errors"
-	"sort"
-	"strings"
 )
 
-const base58 = 58
-
-var (
-	decodeMap  = make([]int64, 256)
-	characters = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
+const (
+	fiftyEight        = 58
+	defaultCharacters = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
 )
 
-func init() {
-	defineDecodeMap()
-}
+func defineDecodeMap(characters []byte) []int64 {
 
-func defineDecodeMap() {
-	for i := range decodeMap {
-		decodeMap[i] = -1
+	m := make([]int64, 256)
+
+	for i := range m {
+		m[i] = -1
 	}
 	for i := range characters {
-		decodeMap[characters[i]] = int64(i)
-	}
-}
-
-// SetBase58Characters changes characters of Base58.
-func SetBase58Characters(chars string, sorting bool) error {
-	if len(chars) != base58 {
-		return errors.New("indigo: characters must be 58 length")
+		m[characters[i]] = int64(i)
 	}
 
-	if sorting {
-		s := strings.Split(chars, "")
-		sort.Strings(s)
-		chars = strings.Join(s, "")
-	}
-
-	characters = chars
-	defineDecodeMap()
-	return nil
+	return m
 }
 
 // EncodeBase58 returns encoded string by Base58.
-func EncodeBase58(u uint64) string {
+func (g *Generator) EncodeBase58(id uint64) string {
 
-	if u == 0 {
-		return characters[:1]
+	if id == 0 {
+		return string(g.characters[:1])
 	}
 
-	d := make([]byte, 0, binary.MaxVarintLen64)
-	for u > 0 {
-		d = append(d, characters[u%base58])
-		u /= base58
+	bin := make([]byte, 0, binary.MaxVarintLen64)
+	for id > 0 {
+		bin = append(bin, g.characters[id%fiftyEight])
+		id /= fiftyEight
 	}
 
-	for i, j := 0, len(d)-1; i < j; i, j = i+1, j-1 {
-		d[i], d[j] = d[j], d[i]
+	for i, j := 0, len(bin)-1; i < j; i, j = i+1, j-1 {
+		bin[i], bin[j] = bin[j], bin[i]
 	}
 
-	return string(d)
+	return string(bin)
 }
 
 // DecodeBase58 returns decoded unsigned int64 by Base58.
-func DecodeBase58(s string) (uint64, error) {
+func (g *Generator) DecodeBase58(id string) (uint64, error) {
 
-	if len(s) == 0 {
+	if id == "" {
 		return 0, errors.New("indigo: source should not be empty")
 	}
 
-	n := uint64(0)
-	for i := range s {
-		u := decodeMap[s[i]]
+	var n uint64
+	for i := range id {
+		u := g.decodeMap[id[i]]
 		if u < 0 {
-			return 0, errors.New("indigo: invalid character = " + string(s[i]))
+			return 0, errors.New("indigo: invalid character = " + string(id[i]))
 		}
-		n = n*base58 + uint64(u)
+		n = n*fiftyEight + uint64(u)
 	}
 	return n, nil
 }

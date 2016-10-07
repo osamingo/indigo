@@ -9,9 +9,8 @@
 
 ## About
 
-A distributed unique ID generator of using Sonyflake and encoded by Base58.  
-Base58 logic is optimized unsigned int64.
-
+- A distributed unique ID generator of using Sonyflake and encoded by Base58.
+- Base58 logic is optimized unsigned int64.
 - ID max length is 11 characters by unsigned int64 max value.
 - Default characters: `123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz`
 
@@ -35,18 +34,23 @@ import (
 )
 
 // 2009-11-10 23:00:00 UTC
-const startedAt = 1257894000
+const startedAt  = 1257894000
 
 func main() {
 
-	indigo.New(time.Unix(startedAt, 0), nil, nil)
+	g, err := indigo.New(indigo.Settings{
+		StartTime:  time.Unix(startedAt, 0),
+	})
+	if err != nil {
+		log.Fatalln(err)
+	}
 
 	wg := sync.WaitGroup{}
 	wg.Add(100)
 	for i := 0; i < 100; i++ {
 		go func() {
 			defer wg.Done()
-			id, err := indigo.NextID()
+			id, err := g.NextID()
 			if err != nil {
 				log.Fatalln(err)
 			} else {
@@ -66,9 +70,9 @@ func main() {
 # CPU    : 2.8 GHz Intel Core i7
 # Memory : 16 GB 1600 MHz DDR3
 
-BenchmarkEncodeBase58-8    20000000      104 ns/op    46 B/op    1 allocs/op
-BenchmarkDecodeBase58-8    10000000      238 ns/op     0 B/op    0 allocs/op
-BenchmarkNextID-8             50000    38943 ns/op     8 B/op    1 allocs/op
+BenchmarkGenerator_EncodeBase58-8    20000000      107 ns/op    46 B/op    1 allocs/op
+BenchmarkGenerator_DecodeBase58-8    30000000     54.5 ns/op     0 B/op    0 allocs/op
+BenchmarkGenerator_NextID-8             50000    39184 ns/op     7 B/op    1 allocs/op
 ```
 
 ## Bibliography
