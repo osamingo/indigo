@@ -3,57 +3,37 @@ package indigo
 import (
 	"encoding/binary"
 	"errors"
-	"sort"
-	"strings"
 )
 
-const fiftyEight = 58
-
-var (
-	decodeMap  = make([]int64, 256)
-	characters = []byte("123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz")
+const (
+	fiftyEight        = 58
+	defaultCharacters = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
 )
 
-func init() {
-	defineDecodeMap()
-}
+func defineDecodeMap(characters []byte) []int64 {
 
-func defineDecodeMap() {
-	for i := range decodeMap {
-		decodeMap[i] = -1
+	m := make([]int64, 256)
+
+	for i := range m {
+		m[i] = -1
 	}
 	for i := range characters {
-		decodeMap[characters[i]] = int64(i)
+		m[characters[i]] = int64(i)
 	}
+
+	return m
 }
 
-// SetBase58Characters changes characters of Base58.
-func SetBase58Characters(chars string, sorting bool) error {
-	if len(chars) != fiftyEight {
-		return errors.New("indigo: characters must be 58 length")
-	}
-
-	if sorting {
-		s := strings.Split(chars, "")
-		sort.Strings(s)
-		chars = strings.Join(s, "")
-	}
-
-	characters = []byte(chars)
-	defineDecodeMap()
-	return nil
-}
-
-// EncodeBase58 returns encoded byte slice by Base58.
-func EncodeBase58(id uint64) []byte {
+// EncodeBase58 returns encoded string by Base58.
+func (g *Generator) EncodeBase58(id uint64) string {
 
 	if id == 0 {
-		return characters[:1]
+		return string(g.characters[:1])
 	}
 
 	bin := make([]byte, 0, binary.MaxVarintLen64)
 	for id > 0 {
-		bin = append(bin, characters[id%fiftyEight])
+		bin = append(bin, g.characters[id%fiftyEight])
 		id /= fiftyEight
 	}
 
@@ -61,19 +41,19 @@ func EncodeBase58(id uint64) []byte {
 		bin[i], bin[j] = bin[j], bin[i]
 	}
 
-	return bin
+	return string(bin)
 }
 
 // DecodeBase58 returns decoded unsigned int64 by Base58.
-func DecodeBase58(id []byte) (uint64, error) {
+func (g *Generator) DecodeBase58(id string) (uint64, error) {
 
-	if len(id) == 0 {
+	if id == "" {
 		return 0, errors.New("indigo: source should not be empty")
 	}
 
 	var n uint64
 	for i := range id {
-		u := decodeMap[id[i]]
+		u := g.decodeMap[id[i]]
 		if u < 0 {
 			return 0, errors.New("indigo: invalid character = " + string(id[i]))
 		}
