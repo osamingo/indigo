@@ -21,11 +21,10 @@ var tc = map[uint64]string{
 
 func TestGenerator_EncodeBase58(t *testing.T) {
 
-	g, err := New(Settings{
+	g := New(Settings{
 		StartTime: time.Now(),
 		MachineID: mid,
 	})
-	require.NoError(t, err)
 
 	for k, v := range tc {
 		assert.Equal(t, v, g.EncodeBase58(k))
@@ -34,13 +33,12 @@ func TestGenerator_EncodeBase58(t *testing.T) {
 
 func TestGenerator_DecodeBase58(t *testing.T) {
 
-	g, err := New(Settings{
+	g := New(Settings{
 		StartTime: time.Now(),
 		MachineID: mid,
 	})
-	require.NoError(t, err)
 
-	_, err = g.DecodeBase58("0")
+	_, err := g.DecodeBase58("0")
 	require.Error(t, err)
 
 	for k, v := range tc {
@@ -52,7 +50,7 @@ func TestGenerator_DecodeBase58(t *testing.T) {
 
 func BenchmarkGenerator_EncodeBase58(b *testing.B) {
 
-	g, _ := New(Settings{
+	g := New(Settings{
 		StartTime: time.Now(),
 		MachineID: mid,
 	})
@@ -68,7 +66,7 @@ func BenchmarkGenerator_EncodeBase58(b *testing.B) {
 
 func BenchmarkGenerator_DecodeBase58(b *testing.B) {
 
-	g, _ := New(Settings{
+	g := New(Settings{
 		StartTime: time.Now(),
 		MachineID: mid,
 	})

@@ -17,45 +17,27 @@ var mid = func() (uint16, error) { return math.MaxUint16, nil }
 func TestNew(t *testing.T) {
 
 	s := Settings{
-		StartTime:  time.Now(),
-		MachineID:  mid,
-		Characters: "abc",
+		StartTime: time.Now(),
+		MachineID: mid,
 	}
 
-	g, err := New(s)
-	require.Error(t, err)
-
-	s.Characters = ""
-
-	g, err = New(s)
-	require.NoError(t, err)
-
-	g, err = New(s)
-	require.NoError(t, err)
-	assert.Equal(t, defaultCharacters, string(g.characters))
+	g := New(s)
+	assert.Equal(t, "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz", string(g.base))
 
 	ripple := "rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz"
 
-	s.Characters = ripple
+	s.Base = []byte(ripple)
 
-	g, err = New(s)
-	require.NoError(t, err)
-	assert.Equal(t, ripple, string(g.characters))
-
-	s.Sort = true
-
-	g, err = New(s)
-	require.NoError(t, err)
-	assert.Equal(t, defaultCharacters, string(g.characters))
+	g = New(s)
+	assert.Equal(t, ripple, string(g.base))
 }
 
 func TestGenerator_NextID(t *testing.T) {
 
-	g, err := New(Settings{
+	g := New(Settings{
 		StartTime: time.Now(),
 		MachineID: mid,
 	})
-	require.NoError(t, err)
 
 	id1, err := g.NextID()
 	require.NoError(t, err)
@@ -69,11 +51,10 @@ func TestGenerator_NextID(t *testing.T) {
 
 func TestGenerator_Decompose(t *testing.T) {
 
-	g, err := New(Settings{
+	g := New(Settings{
 		StartTime: time.Now(),
 		MachineID: mid,
 	})
-	require.NoError(t, err)
 
 	m, err := g.Decompose("KGuFE14P")
 	require.NoError(t, err)
@@ -86,11 +67,10 @@ func TestGenerator_Decompose(t *testing.T) {
 
 func TestGenerator_NextID_Race(t *testing.T) {
 
-	g, err := New(Settings{
+	g := New(Settings{
 		StartTime: time.Now(),
 		MachineID: mid,
 	})
-	require.NoError(t, err)
 
 	gs := 2048
 
@@ -111,14 +91,14 @@ func TestGenerator_NextID_Race(t *testing.T) {
 
 func TestGenerator_NextID_SortIDs(t *testing.T) {
 
-	g, err := New(Settings{
+	g := New(Settings{
 		StartTime: time.Now(),
 		MachineID: mid,
 	})
-	require.NoError(t, err)
 
 	ids := make([]string, 10)
 
+	var err error
 	for i := range ids {
 		time.Sleep(10 * time.Millisecond)
 		ids[i], err = g.NextID()
@@ -149,7 +129,7 @@ func TestGenerator_NextID_SortIDs(t *testing.T) {
 
 func BenchmarkGenerator_NextID(b *testing.B) {
 
-	g, _ := New(Settings{
+	g := New(Settings{
 		StartTime: time.Now(),
 		MachineID: mid,
 	})
