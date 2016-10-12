@@ -9,11 +9,13 @@
 
 ## About
 
-- A distributed unique ID generator of using Sonyflake and encoded by Base58.
-- Base58 logic is optimized unsigned int64.
+- A distributed unique ID generator of using Sonyflake and encoded by BaseXX.
+- BaseXX logic is optimized unsigned int64.
+- base characters can change to your original.
+
+- Default encoder is Base58
 - ID max length is 11 characters by unsigned int64 max value.
 - Default base characters: `123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz`
-- And you can change base characters and BaseXX.
 
 ## Install
 
@@ -74,9 +76,10 @@ func main() {
 # CPU    : 2.8 GHz Intel Core i7
 # Memory : 16 GB 1600 MHz DDR3
 
-BenchmarkGenerator_EncodeBase58-8    20000000      107 ns/op    46 B/op    1 allocs/op
-BenchmarkGenerator_DecodeBase58-8    30000000     54.5 ns/op     0 B/op    0 allocs/op
-BenchmarkGenerator_NextID-8             50000    39184 ns/op     7 B/op    1 allocs/op
+BenchmarkGenerator_Decode-8    20000000     55.8 ns/op     0 B/op    0 allocs/op
+BenchmarkGenerator_Encode-8    10000000      235 ns/op    46 B/op    1 allocs/op
+BenchmarkGenerator_NextID-8       50000    39200 ns/op     7 B/op    1 allocs/op
+
 ```
 
 ## Bibliography

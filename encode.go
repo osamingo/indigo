@@ -9,8 +9,7 @@ func (g *Generator) Encode(id uint64) string {
 		return string(g.base[:1])
 	}
 
-	l := uint64(len(g.base))
-	bin := make([]byte, 0, binary.MaxVarintLen64)
+	l, bin := uint64(len(g.base)), make([]byte, 0, binary.MaxVarintLen64)
 	for id > 0 {
 		bin = append(bin, g.base[id%l])
 		id /= l
