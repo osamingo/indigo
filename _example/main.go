@@ -8,17 +8,20 @@ import (
 	"github.com/osamingo/indigo"
 )
 
-// 2009-11-10 23:00:00 UTC
-const startedAt = 1257894000
+var g *indigo.Generator
 
-func main() {
-
-	g, err := indigo.New(indigo.Settings{
-		StartTime: time.Unix(startedAt, 0),
+func init() {
+	g = indigo.New(indigo.Settings{
+		// 2009-11-10 23:00:00 UTC
+		StartTime: time.Unix(1257894000, 0),
 	})
+	_, err := g.NextID()
 	if err != nil {
 		log.Fatalln(err)
 	}
+}
+
+func main() {
 
 	wg := sync.WaitGroup{}
 	wg.Add(100)
@@ -29,7 +32,7 @@ func main() {
 			if err != nil {
 				log.Fatalln(err)
 			} else {
-				log.Println("id:", id)
+				log.Println("ID:", id)
 			}
 		}()
 	}

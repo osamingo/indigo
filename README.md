@@ -9,10 +9,13 @@
 
 ## About
 
-- A distributed unique ID generator of using Sonyflake and encoded by Base58.
-- Base58 logic is optimized unsigned int64.
+- A distributed unique ID generator of using Sonyflake and encoded by BaseXX.
+- BaseXX logic is optimized unsigned int64.
+- base characters can change to your original.
+
+- Default encoder is Base58
 - ID max length is 11 characters by unsigned int64 max value.
-- Default characters: `123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz`
+- Default base characters: `123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz`
 
 ## Install
 
@@ -33,17 +36,20 @@ import (
 	"github.com/osamingo/indigo"
 )
 
-// 2009-11-10 23:00:00 UTC
-const startedAt  = 1257894000
+var g *indigo.Generator
 
-func main() {
-
-	g, err := indigo.New(indigo.Settings{
-		StartTime:  time.Unix(startedAt, 0),
+func init() {
+	g = indigo.New(indigo.Settings{
+		// 2009-11-10 23:00:00 UTC
+		StartTime: time.Unix(1257894000, 0),
 	})
+	_, err := g.NextID()
 	if err != nil {
 		log.Fatalln(err)
 	}
+}
+
+func main() {
 
 	wg := sync.WaitGroup{}
 	wg.Add(100)
@@ -54,7 +60,7 @@ func main() {
 			if err != nil {
 				log.Fatalln(err)
 			} else {
-				log.Println("id:", id)
+				log.Println("ID:", id)
 			}
 		}()
 	}
@@ -70,9 +76,10 @@ func main() {
 # CPU    : 2.8 GHz Intel Core i7
 # Memory : 16 GB 1600 MHz DDR3
 
-BenchmarkGenerator_EncodeBase58-8    20000000      107 ns/op    46 B/op    1 allocs/op
-BenchmarkGenerator_DecodeBase58-8    30000000     54.5 ns/op     0 B/op    0 allocs/op
-BenchmarkGenerator_NextID-8             50000    39184 ns/op     7 B/op    1 allocs/op
+BenchmarkGenerator_Decode-8    20000000     55.8 ns/op     0 B/op    0 allocs/op
+BenchmarkGenerator_Encode-8    10000000      235 ns/op    46 B/op    1 allocs/op
+BenchmarkGenerator_NextID-8       50000    39200 ns/op     7 B/op    1 allocs/op
+
 ```
 
 ## Bibliography

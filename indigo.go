@@ -1,20 +1,17 @@
 package indigo
 
 import (
-	"errors"
-	"sort"
-	"strings"
 	"time"
 
 	"github.com/sony/sonyflake"
 )
 
 type (
-	// A Generator has sonyflake, characters of Base58 and decode map.
+	// A Generator has sonyflake, characters of BaseXX and decode map.
 	Generator struct {
-		sonyflake  *sonyflake.Sonyflake
-		characters []byte
-		decodeMap  []int64
+		sonyflake *sonyflake.Sonyflake
+		base      []byte
+		decodes   []int64
 	}
 
 	// Settings has setting parameters for indigo.Generator.
@@ -22,40 +19,26 @@ type (
 		StartTime      time.Time
 		MachineID      func() (uint16, error)
 		CheckMachineID func(uint16) bool
-		Characters     string
-		Sort           bool
+		Base           []byte
 	}
 )
 
 // New settings new a indigo.Generator.
-func New(s Settings) (*Generator, error) {
+func New(s Settings) *Generator {
 
-	if s.Characters == "" {
-		s.Characters = defaultCharacters
+	if len(s.Base) == 0 {
+		s.Base = []byte("123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz")
 	}
 
-	if len(s.Characters) != fiftyEight {
-		return nil, errors.New("indigo: characters must be 58 length")
-	}
-
-	if s.Sort {
-		cs := strings.Split(s.Characters, "")
-		sort.Strings(cs)
-		s.Characters = strings.Join(cs, "")
-	}
-
-	g := &Generator{
+	return &Generator{
 		sonyflake: sonyflake.NewSonyflake(sonyflake.Settings{
 			StartTime:      s.StartTime,
 			MachineID:      s.MachineID,
 			CheckMachineID: s.CheckMachineID,
 		}),
-		characters: []byte(s.Characters),
+		base:    s.Base,
+		decodes: defineDecodeMap(s.Base),
 	}
-
-	g.decodeMap = defineDecodeMap(g.characters)
-
-	return g, nil
 }
 
 // NextID generates a next unique ID.
@@ -64,12 +47,12 @@ func (g *Generator) NextID() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return g.EncodeBase58(n), nil
+	return g.Encode(n), nil
 }
 
 // Decompose returns a set of sonyflake ID parts.
 func (g *Generator) Decompose(id string) (map[string]uint64, error) {
-	b, err := g.DecodeBase58(id)
+	b, err := g.Decode(id)
 	if err != nil {
 		return nil, err
 	}
