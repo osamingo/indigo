@@ -12,7 +12,19 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-var mid = func() (uint16, error) { return math.MaxUint16, nil }
+var (
+	mid = func() (uint16, error) {
+		return math.MaxUint16, nil
+	}
+	tc = map[uint64]string{
+		0:              "1",
+		57:             "z",
+		math.MaxUint8:  "5Q",
+		math.MaxUint16: "LUv",
+		math.MaxUint32: "7YXq9G",
+		math.MaxUint64: "jpXCZedGfVQ",
+	}
+)
 
 func TestNew(t *testing.T) {
 

@@ -7,12 +7,11 @@ import (
 )
 
 type (
-	// A Generator has sonyflake, characters of Base58 and decode map.
+	// A Generator has sonyflake, characters of BaseXX and decode map.
 	Generator struct {
-		sonyflake  *sonyflake.Sonyflake
-		base       []byte
-		baseLength uint64
-		decodes    []int64
+		sonyflake *sonyflake.Sonyflake
+		base      []byte
+		decodes   []int64
 	}
 
 	// Settings has setting parameters for indigo.Generator.
@@ -37,9 +36,8 @@ func New(s Settings) *Generator {
 			MachineID:      s.MachineID,
 			CheckMachineID: s.CheckMachineID,
 		}),
-		base:       s.Base,
-		baseLength: uint64(len(s.Base)),
-		decodes:    defineDecodeMap(s.Base),
+		base:    s.Base,
+		decodes: defineDecodeMap(s.Base),
 	}
 }
 
@@ -49,12 +47,12 @@ func (g *Generator) NextID() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return g.EncodeBase58(n), nil
+	return g.Encode(n), nil
 }
 
 // Decompose returns a set of sonyflake ID parts.
 func (g *Generator) Decompose(id string) (map[string]uint64, error) {
-	b, err := g.DecodeBase58(id)
+	b, err := g.Decode(id)
 	if err != nil {
 		return nil, err
 	}
