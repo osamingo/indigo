@@ -28,11 +28,11 @@ func TestNewMustEncoder(t *testing.T) {
 	require.NotNil(t, enc)
 
 	require.Panics(t, func() {
-		enc = NewMustEncoder("")
+		NewMustEncoder("")
 	})
 
 	require.Panics(t, func() {
-		enc = NewMustEncoder("test")
+		NewMustEncoder("test")
 	})
 }
 
