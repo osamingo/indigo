@@ -1,8 +1,8 @@
 package base58
 
 import (
-	"errors"
 	"encoding/binary"
+	"errors"
 )
 
 type Encoder struct {

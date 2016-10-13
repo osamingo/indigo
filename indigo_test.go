@@ -12,19 +12,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-var (
-	mid = func() (uint16, error) {
-		return math.MaxUint16, nil
-	}
-	tc = map[uint64]string{
-		0:              "1",
-		57:             "z",
-		math.MaxUint8:  "5Q",
-		math.MaxUint16: "LUv",
-		math.MaxUint32: "7YXq9G",
-		math.MaxUint64: "jpXCZedGfVQ",
-	}
-)
+var mid = func() (uint16, error) { return math.MaxUint16, nil }
 
 func TestNew(t *testing.T) {
 
@@ -34,14 +22,8 @@ func TestNew(t *testing.T) {
 	}
 
 	g := New(s)
-	assert.Equal(t, "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz", string(g.base))
-
-	ripple := "rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz"
-
-	s.Base = []byte(ripple)
-
-	g = New(s)
-	assert.Equal(t, ripple, string(g.base))
+	require.NotNil(t, g.sf)
+	require.NotNil(t, g.enc)
 }
 
 func TestGenerator_NextID(t *testing.T) {

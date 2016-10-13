@@ -1,12 +1,13 @@
 package base58
 
 import (
-	"testing"
 	"math"
-	"github.com/stretchr/testify/require"
-	"github.com/stretchr/testify/assert"
-	"time"
 	"math/rand"
+	"testing"
+	"time"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 var bc = map[uint64]string{
@@ -20,13 +21,39 @@ var bc = map[uint64]string{
 
 func TestNewMustEncoder(t *testing.T) {
 
+	var enc *Encoder
+	require.NotPanics(t, func() {
+		enc = NewMustEncoder("rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz")
+	})
+	require.NotNil(t, enc)
+
+	require.Panics(t, func() {
+		enc = NewMustEncoder("")
+	})
+
+	require.Panics(t, func() {
+		enc = NewMustEncoder("test")
+	})
 }
 
 func TestNewEncoder(t *testing.T) {
-	_, err := NewEncoder("")
+
+	enc, err := NewEncoder("rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz")
+	require.NoError(t, err)
+	require.NotNil(t, enc)
+
+	_, err = NewEncoder("")
+	require.Error(t, err)
+
+	_, err = NewEncoder("test")
+	require.Error(t, err)
 }
 
 func TestEncoder_Encode(t *testing.T) {
+
+	id := StdEncoding.Encode(0)
+	assert.Equal(t, "1", id)
+
 	for k, v := range bc {
 		assert.Equal(t, v, StdEncoding.Encode(k))
 	}
@@ -34,7 +61,10 @@ func TestEncoder_Encode(t *testing.T) {
 
 func TestEncoder_Decode(t *testing.T) {
 
-	_, err := StdEncoding.Decode("0")
+	_, err := StdEncoding.Decode("")
+	require.Error(t, err)
+
+	_, err = StdEncoding.Decode("0")
 	require.Error(t, err)
 
 	for k, v := range bc {
