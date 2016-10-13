@@ -3,15 +3,15 @@ package indigo
 import (
 	"time"
 
+	"github.com/osamingo/indigo/base58"
 	"github.com/sony/sonyflake"
 )
 
 type (
 	// A Generator has sonyflake, characters of BaseXX and decode map.
 	Generator struct {
-		sonyflake *sonyflake.Sonyflake
-		base      []byte
-		decodes   []int64
+		sf  *sonyflake.Sonyflake
+		enc Encoder
 	}
 
 	// Settings has setting parameters for indigo.Generator.
@@ -19,40 +19,37 @@ type (
 		StartTime      time.Time
 		MachineID      func() (uint16, error)
 		CheckMachineID func(uint16) bool
-		Base           []byte
+		Encoder        Encoder
 	}
 )
 
 // New settings new a indigo.Generator.
 func New(s Settings) *Generator {
-
-	if len(s.Base) == 0 {
-		s.Base = []byte("123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz")
+	if s.Encoder == nil {
+		s.Encoder = base58.StdEncoding
 	}
-
 	return &Generator{
-		sonyflake: sonyflake.NewSonyflake(sonyflake.Settings{
+		sf: sonyflake.NewSonyflake(sonyflake.Settings{
 			StartTime:      s.StartTime,
 			MachineID:      s.MachineID,
 			CheckMachineID: s.CheckMachineID,
 		}),
-		base:    s.Base,
-		decodes: defineDecodeMap(s.Base),
+		enc: s.Encoder,
 	}
 }
 
 // NextID generates a next unique ID.
 func (g *Generator) NextID() (string, error) {
-	n, err := g.sonyflake.NextID()
+	n, err := g.sf.NextID()
 	if err != nil {
 		return "", err
 	}
-	return g.Encode(n), nil
+	return g.enc.Encode(n), nil
 }
 
 // Decompose returns a set of sonyflake ID parts.
 func (g *Generator) Decompose(id string) (map[string]uint64, error) {
-	b, err := g.Decode(id)
+	b, err := g.enc.Decode(id)
 	if err != nil {
 		return nil, err
 	}
