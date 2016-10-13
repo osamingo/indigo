@@ -8,7 +8,7 @@ import (
 )
 
 type (
-	// A Generator has sonyflake, characters of BaseXX and decode map.
+	// A Generator has sonyflake and encoder.
 	Generator struct {
 		sf  *sonyflake.Sonyflake
 		enc Encoder
