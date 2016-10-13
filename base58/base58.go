@@ -5,6 +5,7 @@ import (
 	"errors"
 )
 
+// An Encoder implements indigo.Encoder interface by Base58.
 type Encoder struct {
 	encode    [58]byte
 	decodeMap [256]int
@@ -12,8 +13,10 @@ type Encoder struct {
 
 const encodeStd = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
 
+// StdEncoding is Base58(Sortable) Encoder.
 var StdEncoding = NewMustEncoder(encodeStd)
 
+// NewMustEncoder returns new base58.Encoder.
 func NewMustEncoder(source string) *Encoder {
 	enc, err := NewEncoder(source)
 	if err != nil {
@@ -22,6 +25,7 @@ func NewMustEncoder(source string) *Encoder {
 	return enc
 }
 
+// NewEncoder returns new base58.Encoder.
 func NewEncoder(source string) (*Encoder, error) {
 
 	if len(source) != 58 {
