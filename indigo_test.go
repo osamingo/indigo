@@ -12,12 +12,15 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-var mid = func() (uint16, error) { return math.MaxUint16, nil }
+var (
+	start = time.Unix(1257894000, 0)
+	mid   = func() (uint16, error) { return math.MaxUint16, nil }
+)
 
 func TestNew(t *testing.T) {
 
 	s := Settings{
-		StartTime: time.Now(),
+		StartTime: start,
 		MachineID: mid,
 	}
 
@@ -29,7 +32,7 @@ func TestNew(t *testing.T) {
 func TestGenerator_NextID(t *testing.T) {
 
 	g := New(Settings{
-		StartTime: time.Now(),
+		StartTime: start,
 		MachineID: mid,
 	})
 
@@ -46,7 +49,7 @@ func TestGenerator_NextID(t *testing.T) {
 func TestGenerator_Decompose(t *testing.T) {
 
 	g := New(Settings{
-		StartTime: time.Now(),
+		StartTime: start,
 		MachineID: mid,
 	})
 
@@ -62,7 +65,7 @@ func TestGenerator_Decompose(t *testing.T) {
 func TestGenerator_NextID_Race(t *testing.T) {
 
 	g := New(Settings{
-		StartTime: time.Now(),
+		StartTime: start,
 		MachineID: mid,
 	})
 
@@ -85,38 +88,59 @@ func TestGenerator_NextID_Race(t *testing.T) {
 
 func TestGenerator_NextID_SortIDs(t *testing.T) {
 
-	g := New(Settings{
-		StartTime: time.Now(),
-		MachineID: mid,
-	})
+	th := 10
+	ids := make([]string, 0, 100)
 
-	ids := make([]string, 10)
+	m := sync.Mutex{}
+	wg := sync.WaitGroup{}
+	wg.Add(th)
 
-	var err error
-	for i := range ids {
-		time.Sleep(10 * time.Millisecond)
-		ids[i], err = g.NextID()
-		require.NoError(t, err)
+	for i := 0; i < th; i++ {
+		go func(mm uint16) {
+			defer wg.Done()
+
+			g := New(Settings{
+				StartTime: start,
+				MachineID: func() (uint16, error) {
+					return mm, nil
+				},
+			})
+
+			r := rand.New(rand.NewSource(time.Now().UnixNano()))
+
+			s := make([]string, 0, th)
+			for j := 0; j < th; j++ {
+				time.Sleep(10*time.Millisecond + time.Duration(r.Intn(1e9)))
+				id, err := g.NextID()
+				require.NoError(t, err)
+				s = append(s, id)
+			}
+
+			m.Lock()
+			ids = append(ids, s...)
+			m.Unlock()
+		}(uint16(i+1))
 	}
 
-	for i := range ids {
-		j := rand.Intn(i + 1)
-		ids[i], ids[j] = ids[j], ids[i]
-	}
+	wg.Wait()
 
-	old := make([]string, 10)
-
+	old := make([]string, 100)
 	copy(old, ids)
 	require.Equal(t, old, ids)
 
 	sort.Strings(ids)
 	require.NotEqual(t, old, ids)
 
+	g := New(Settings{
+		StartTime: start,
+		MachineID: mid,
+	})
+
 	var prev uint64
 	for i := range ids {
 		m, err := g.Decompose(ids[i])
 		require.NoError(t, err)
-		require.True(t, prev < m["time"])
+		require.True(t, prev <= m["time"])
 		prev = m["time"]
 	}
 }
