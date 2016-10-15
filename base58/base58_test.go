@@ -19,20 +19,20 @@ var bc = map[uint64]string{
 	math.MaxUint64: "jpXCZedGfVQ",
 }
 
-func TestNewMustEncoder(t *testing.T) {
+func TestMustNewEncoder(t *testing.T) {
 
 	var enc *Encoder
 	require.NotPanics(t, func() {
-		enc = NewMustEncoder("rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz")
+		enc = MustNewEncoder("rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz")
 	})
 	require.NotNil(t, enc)
 
 	require.Panics(t, func() {
-		NewMustEncoder("")
+		MustNewEncoder("")
 	})
 
 	require.Panics(t, func() {
-		NewMustEncoder("test")
+		MustNewEncoder("test")
 	})
 }
 
