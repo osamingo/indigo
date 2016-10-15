@@ -11,13 +11,11 @@ type Encoder struct {
 	decodeMap [256]int
 }
 
-const encodeStd = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
+// StdEncoding is Base58 Encoder.
+var StdEncoding = MustNewEncoder("123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz")
 
-// StdEncoding is Base58(Sortable) Encoder.
-var StdEncoding = NewMustEncoder(encodeStd)
-
-// NewMustEncoder returns new base58.Encoder.
-func NewMustEncoder(source string) *Encoder {
+// MustNewEncoder returns new base58.Encoder.
+func MustNewEncoder(source string) *Encoder {
 	enc, err := NewEncoder(source)
 	if err != nil {
 		panic(err)
@@ -70,14 +68,14 @@ func (enc *Encoder) Encode(id uint64) string {
 func (enc *Encoder) Decode(id string) (uint64, error) {
 
 	if id == "" {
-		return 0, errors.New("base58: ID should not be empty")
+		return 0, errors.New("base58: id should not be empty")
 	}
 
 	var n uint64
 	for i := range id {
 		u := enc.decodeMap[id[i]]
 		if u < 0 {
-			return 0, errors.New("base58: invalid character = " + string(id[i]))
+			return 0, errors.New("base58: invalid character - " + string(id[i]))
 		}
 		n = n*58 + uint64(u)
 	}
