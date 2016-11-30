@@ -1,11 +1,15 @@
 hash: ef8b207c856a17c957b26afb50be18949e11158e6c7213dd67307bcf1adf698f
-updated: 2016-10-12T14:10:46.376183681+09:00
+updated: 2016-11-30T22:41:17.754750995+09:00
 imports:
+- name: github.com/osamingo/indigo
+  version: ed1f3a23b28b7cf5a7c44422d8a34f9ec97e20b2
+  subpackages:
+  - base58
 - name: github.com/sony/sonyflake
   version: fa881fb1052b152e977c41023052c2f2a1c475e9
 testImports:
 - name: github.com/davecgh/go-spew
-  version: 6d212800a42e8ab5c146b8ace3490ee17e5225f9
+  version: 04cdfd42973bb9c8589fd6a731800cf222fde1a9
   subpackages:
   - spew
 - name: github.com/pmezard/go-difflib
@@ -13,7 +17,7 @@ testImports:
   subpackages:
   - difflib
 - name: github.com/stretchr/testify
-  version: 976c720a22c8eb4eb6a0b4348ad85ad12491a506
+  version: 18a02ba4a312f95da08ff4cfc0055750ce50ae9e
   subpackages:
   - assert
   - require
