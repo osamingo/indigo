@@ -1,10 +1,6 @@
 hash: ef8b207c856a17c957b26afb50be18949e11158e6c7213dd67307bcf1adf698f
-updated: 2016-11-30T22:41:17.754750995+09:00
+updated: 2017-07-05T15:04:43.834966598+09:00
 imports:
-- name: github.com/osamingo/indigo
-  version: ed1f3a23b28b7cf5a7c44422d8a34f9ec97e20b2
-  subpackages:
-  - base58
 - name: github.com/sony/sonyflake
   version: fa881fb1052b152e977c41023052c2f2a1c475e9
 testImports:
@@ -17,7 +13,7 @@ testImports:
   subpackages:
   - difflib
 - name: github.com/stretchr/testify
-  version: 18a02ba4a312f95da08ff4cfc0055750ce50ae9e
+  version: f6abca593680b2315d2075e0f5e2a9751e3f431a
   subpackages:
   - assert
   - require
