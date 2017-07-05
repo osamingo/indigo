@@ -73,9 +73,20 @@ func main() {
 # CPU    : 2.8 GHz Intel Core i7
 # Memory : 16 GB 1600 MHz DDR3
 
-BenchmarkEncoder_Encode-8      20000000      106 ns/op    46 B/op    1 allocs/op
-BenchmarkEncoder_Decode-8      30000000     52.8 ns/op     0 B/op    0 allocs/op
-BenchmarkGenerator_NextID-8       50000    39167 ns/op     7 B/op    1 allocs/op
+BenchmarkEncoder_Encode-8       20000000         107 ns/op      46 B/op     1 allocs/op
+BenchmarkEncoder_Decode-8       30000000        46.8 ns/op       0 B/op     0 allocs/op
+PASS
+ok      github.com/osamingo/indigo/base58       3.730s
+```
+
+```
+# Machine: MacBook Pro (Retina, 15-inch, Mid 2015)
+# CPU    : 2.8 GHz Intel Core i7
+# Memory : 16 GB 1600 MHz DDR3
+
+BenchmarkGenerator_NextID-8     50000          39221 ns/op       7 B/op     1 allocs/op
+PASS
+ok      github.com/osamingo/indigo      9.679s
 ```
 
 ## Bibliography
