@@ -5,17 +5,14 @@ machine:
 
 dependencies:
   override:
-    - sudo add-apt-repository ppa:masterminds/glide -y
-    - sudo apt-get update
-    - sudo apt-get install glide -y
+    - go get -u github.com/golang/dep/cmd/dep github.com/haya14busa/goverage
 
 test:
   pre:
     - mkdir -p "${IMPORT_PATH}"
     - ln -sf "$(pwd)" "${APP_PATH}"
-    - cd "${APP_PATH}" && glide install
+    - cd "${APP_PATH}" && dep ensure -v
   override:
-    - cd "${APP_PATH}" && echo mode:$' 'atomic > coverage.txt
-    - cd "${APP_PATH}" && glide nv | xargs -n1 -I{} sh -c 'go test -race -covermode=atomic -coverprofile=coverage.tmp {} && tail -n +2 coverage.tmp >> coverage.txt' && rm coverage.tmp
+    - cd "${APP_PATH}" && goverage -v -coverprofile=coverage.txt ./...
   post:
     - cd "${APP_PATH}" && bash <(curl -s https://codecov.io/bash)
