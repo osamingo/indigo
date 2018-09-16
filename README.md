@@ -1,6 +1,6 @@
 # Indigo
 
-[![CircleCI](https://img.shields.io/circleci/project/osamingo/indigo/master.svg)](https://circleci.com/gh/osamingo/indigo)
+[![Travis branch](https://img.shields.io/travis/osamingo/indigo/master.svg)](https://travis-ci.org/osamingo/indigo)
 [![codecov](https://codecov.io/gh/osamingo/indigo/branch/master/graph/badge.svg)](https://codecov.io/gh/osamingo/indigo)
 [![Go Report Card](https://goreportcard.com/badge/osamingo/indigo)](https://goreportcard.com/report/osamingo/indigo)
 [![codebeat badge](https://codebeat.co/badges/3885a5d8-7db0-4162-970a-577a1bf54199)](https://codebeat.co/projects/github-com-osamingo-indigo)
