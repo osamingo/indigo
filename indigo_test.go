@@ -1,6 +1,7 @@
 package indigo
 
 import (
+	"fmt"
 	"math"
 	"math/rand"
 	"sort"
@@ -157,4 +158,28 @@ func BenchmarkGenerator_NextID(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		g.NextID()
 	}
+}
+
+func ExampleGenerator_NextID() {
+	const machineID = 65535
+	g := New(Settings{
+		StartTime: time.Now(),
+		MachineID: func() (uint16, error) {
+			return machineID, nil
+		},
+	})
+	id, err := g.NextID()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(id)
+
+	m, err := g.Decompose(id)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(m["machine-id"])
+	// output:
+	// 2VKmG
+	// 65535
 }
