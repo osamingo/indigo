@@ -7,5 +7,3 @@ linters-settings:
 
 linters:
   enable-all: true
-  disable:
-    - gochecknoglobals
