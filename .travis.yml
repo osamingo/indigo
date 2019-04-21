@@ -2,27 +2,25 @@ sudo: false
 
 language: go
 go:
-- 1.10.x
-- 1.11.x
-- tip
+  - 1.11.x
+  - 1.12.x
+  - tip
 
 matrix:
   allow_failures:
-  - go: tip
+    - go: tip
 
 before_install:
-- go get -u github.com/golang/dep/cmd/dep golang.org/x/lint/golint honnef.co/go/tools/cmd/megacheck
+  - go get -u github.com/golang/dep/cmd/dep github.com/golangci/golangci-lint/cmd/golangci-lint
 
 install:
-- dep ensure
+  - dep ensure
 
 before_script:
-- go vet . ./base58
-- golint -set_exit_status=1 . ./base58
-- megacheck . ./base58
+  - golangci-lint run
 
 script:
-- go test -covermode=atomic -coverprofile=coverage.txt ./...
+  - go test -covermode=atomic -coverprofile=coverage.txt ./...
 
 after_success:
-- bash <(curl -s https://codecov.io/bash)
+  - bash <(curl -s https://codecov.io/bash)

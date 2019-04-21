@@ -1,0 +1,11 @@
+linters-settings:
+  errcheck:
+    check-type-asserts: true
+    check-blank: true
+  misspell:
+    locale: US
+
+linters:
+  enable-all: true
+  disable:
+    - gochecknoglobals
