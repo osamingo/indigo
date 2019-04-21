@@ -10,15 +10,6 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-var bc = map[uint64]string{
-	0:              "1",
-	57:             "z",
-	math.MaxUint8:  "5Q",
-	math.MaxUint16: "LUv",
-	math.MaxUint32: "7YXq9G",
-	math.MaxUint64: "jpXCZedGfVQ",
-}
-
 func TestMustNewEncoder(t *testing.T) {
 
 	var enc *Encoder
@@ -51,6 +42,15 @@ func TestNewEncoder(t *testing.T) {
 
 func TestEncoder_Encode(t *testing.T) {
 
+	bc := map[uint64]string{
+		0:              "1",
+		57:             "z",
+		math.MaxUint8:  "5Q",
+		math.MaxUint16: "LUv",
+		math.MaxUint32: "7YXq9G",
+		math.MaxUint64: "jpXCZedGfVQ",
+	}
+
 	id := StdEncoding.Encode(0)
 	assert.Equal(t, "1", id)
 
@@ -60,6 +60,15 @@ func TestEncoder_Encode(t *testing.T) {
 }
 
 func TestEncoder_Decode(t *testing.T) {
+
+	bc := map[uint64]string{
+		0:              "1",
+		57:             "z",
+		math.MaxUint8:  "5Q",
+		math.MaxUint16: "LUv",
+		math.MaxUint32: "7YXq9G",
+		math.MaxUint64: "jpXCZedGfVQ",
+	}
 
 	_, err := StdEncoding.Decode("")
 	require.Error(t, err)
@@ -87,6 +96,15 @@ func BenchmarkEncoder_Encode(b *testing.B) {
 
 func BenchmarkEncoder_Decode(b *testing.B) {
 
+	bc := map[uint64]string{
+		0:              "1",
+		57:             "z",
+		math.MaxUint8:  "5Q",
+		math.MaxUint16: "LUv",
+		math.MaxUint32: "7YXq9G",
+		math.MaxUint64: "jpXCZedGfVQ",
+	}
+
 	l := len(bc)
 	s := rand.New(rand.NewSource(time.Now().UnixNano()))
 
@@ -98,6 +116,9 @@ func BenchmarkEncoder_Decode(b *testing.B) {
 	b.ReportAllocs()
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		StdEncoding.Decode(vs[s.Intn(l)])
+		_, err := StdEncoding.Decode(vs[s.Intn(l)])
+		if err != nil {
+			b.Fatal(err)
+		}
 	}
 }
