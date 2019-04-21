@@ -13,16 +13,11 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-var (
-	start = time.Unix(1257894000, 0)
-	mid   = func() (uint16, error) { return math.MaxUint16, nil }
-)
-
 func TestNew(t *testing.T) {
 
 	s := Settings{
-		StartTime: start,
-		MachineID: mid,
+		StartTime: time.Unix(1257894000, 0),
+		MachineID: func() (uint16, error) { return math.MaxUint16, nil },
 	}
 
 	g := New(s)
@@ -33,8 +28,8 @@ func TestNew(t *testing.T) {
 func TestGenerator_NextID(t *testing.T) {
 
 	g := New(Settings{
-		StartTime: start,
-		MachineID: mid,
+		StartTime: time.Unix(1257894000, 0),
+		MachineID: func() (uint16, error) { return math.MaxUint16, nil },
 	})
 
 	id1, err := g.NextID()
@@ -50,8 +45,8 @@ func TestGenerator_NextID(t *testing.T) {
 func TestGenerator_Decompose(t *testing.T) {
 
 	g := New(Settings{
-		StartTime: start,
-		MachineID: mid,
+		StartTime: time.Unix(1257894000, 0),
+		MachineID: func() (uint16, error) { return math.MaxUint16, nil },
 	})
 
 	m, err := g.Decompose("KGuFE14P")
@@ -66,8 +61,8 @@ func TestGenerator_Decompose(t *testing.T) {
 func TestGenerator_NextID_Race(t *testing.T) {
 
 	g := New(Settings{
-		StartTime: start,
-		MachineID: mid,
+		StartTime: time.Unix(1257894000, 0),
+		MachineID: func() (uint16, error) { return math.MaxUint16, nil },
 	})
 
 	gs := 2048
@@ -101,7 +96,7 @@ func TestGenerator_NextID_SortIDs(t *testing.T) {
 			defer wg.Done()
 
 			g := New(Settings{
-				StartTime: start,
+				StartTime: time.Unix(1257894000, 0),
 				MachineID: func() (uint16, error) {
 					return mm, nil
 				},
@@ -120,7 +115,7 @@ func TestGenerator_NextID_SortIDs(t *testing.T) {
 			m.Lock()
 			ids = append(ids, s...)
 			m.Unlock()
-		}(uint16(i+1))
+		}(uint16(i + 1))
 	}
 
 	wg.Wait()
@@ -133,8 +128,8 @@ func TestGenerator_NextID_SortIDs(t *testing.T) {
 	require.NotEqual(t, old, ids)
 
 	g := New(Settings{
-		StartTime: start,
-		MachineID: mid,
+		StartTime: time.Unix(1257894000, 0),
+		MachineID: func() (uint16, error) { return math.MaxUint16, nil },
 	})
 
 	var prev uint64
@@ -150,13 +145,19 @@ func BenchmarkGenerator_NextID(b *testing.B) {
 
 	g := New(Settings{
 		StartTime: time.Now(),
-		MachineID: mid,
+		MachineID: func() (uint16, error) { return math.MaxUint16, nil },
 	})
 
 	b.ReportAllocs()
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		g.NextID()
+		id, err := g.NextID()
+		if err != nil {
+			b.Fatal(err)
+		}
+		if id == "" {
+			b.Fatal("generate id is empty")
+		}
 	}
 }
 

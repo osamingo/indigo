@@ -37,7 +37,7 @@ func NewEncoder(source string) (*Encoder, error) {
 	}
 
 	for i := range source {
-		enc.encode[i] = byte(source[i])
+		enc.encode[i] = source[i]
 		enc.decodeMap[enc.encode[i]] = i
 	}
 
