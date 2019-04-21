@@ -1,3 +1,8 @@
+/*
+Package indigo generates a distributed unique ID generator of using Sonyflake and encoded by Base58.
+
+More information: https://github.com/osamingo/indigo/blob/master/README.md
+*/
 package indigo
 
 import (
@@ -8,33 +13,51 @@ import (
 )
 
 type (
+	// An Encoder has Encode and Decode methods.
+	Encoder interface {
+		Encode(uint64) string
+		Decode(string) (uint64, error)
+	}
 	// A Generator has sonyflake and encoder.
 	Generator struct {
 		sf  *sonyflake.Sonyflake
 		enc Encoder
 	}
-
-	// Settings has setting parameters for indigo.Generator.
-	Settings struct {
-		StartTime      time.Time
-		MachineID      func() (uint16, error)
-		CheckMachineID func(uint16) bool
-		Encoder        Encoder
-	}
 )
 
 // New settings new a indigo.Generator.
-func New(s Settings) *Generator {
-	if s.Encoder == nil {
-		s.Encoder = base58.StdEncoding
+func New(enc Encoder, options ...func(*sonyflake.Settings)) *Generator {
+	if enc == nil {
+		enc = base58.MustNewEncoder(base58.StdSource())
+	}
+	s := sonyflake.Settings{}
+	for i := range options {
+		options[i](&s)
 	}
 	return &Generator{
-		sf: sonyflake.NewSonyflake(sonyflake.Settings{
-			StartTime:      s.StartTime,
-			MachineID:      s.MachineID,
-			CheckMachineID: s.CheckMachineID,
-		}),
-		enc: s.Encoder,
+		sf:  sonyflake.NewSonyflake(s),
+		enc: enc,
+	}
+}
+
+// StartTime is optional function for indigo.Generator.
+func StartTime(t time.Time) func(*sonyflake.Settings) {
+	return func(s *sonyflake.Settings) {
+		s.StartTime = t
+	}
+}
+
+// MachineID is optional function for indigo.Generator.
+func MachineID(f func() (uint16, error)) func(*sonyflake.Settings) {
+	return func(s *sonyflake.Settings) {
+		s.MachineID = f
+	}
+}
+
+// CheckMachineID is optional function for indigo.Generator.
+func CheckMachineID(f func(uint16) bool) func(*sonyflake.Settings) {
+	return func(s *sonyflake.Settings) {
+		s.CheckMachineID = f
 	}
 }
 

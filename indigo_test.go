@@ -1,4 +1,4 @@
-package indigo
+package indigo_test
 
 import (
 	"fmt"
@@ -9,28 +9,30 @@ import (
 	"testing"
 	"time"
 
+	"github.com/osamingo/indigo"
+	"github.com/osamingo/indigo/base58"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestNew(t *testing.T) {
-
-	s := Settings{
-		StartTime: time.Unix(1257894000, 0),
-		MachineID: func() (uint16, error) { return math.MaxUint16, nil },
-	}
-
-	g := New(s)
-	require.NotNil(t, g.sf)
-	require.NotNil(t, g.enc)
+	g := indigo.New(
+		base58.MustNewEncoder(base58.StdSource()),
+		indigo.StartTime(time.Unix(1257894000, 0)),
+		indigo.MachineID(func() (uint16, error) { return math.MaxUint16, nil }),
+		indigo.CheckMachineID(nil),
+	)
+	require.NotNil(t, g)
 }
 
 func TestGenerator_NextID(t *testing.T) {
 
-	g := New(Settings{
-		StartTime: time.Unix(1257894000, 0),
-		MachineID: func() (uint16, error) { return math.MaxUint16, nil },
-	})
+	g := indigo.New(
+		nil,
+		indigo.StartTime(time.Unix(1257894000, 0)),
+		indigo.MachineID(func() (uint16, error) { return math.MaxUint16, nil }),
+		indigo.CheckMachineID(nil),
+	)
 
 	id1, err := g.NextID()
 	require.NoError(t, err)
@@ -44,10 +46,12 @@ func TestGenerator_NextID(t *testing.T) {
 
 func TestGenerator_Decompose(t *testing.T) {
 
-	g := New(Settings{
-		StartTime: time.Unix(1257894000, 0),
-		MachineID: func() (uint16, error) { return math.MaxUint16, nil },
-	})
+	g := indigo.New(
+		nil,
+		indigo.StartTime(time.Unix(1257894000, 0)),
+		indigo.MachineID(func() (uint16, error) { return math.MaxUint16, nil }),
+		indigo.CheckMachineID(nil),
+	)
 
 	m, err := g.Decompose("KGuFE14P")
 	require.NoError(t, err)
@@ -60,10 +64,11 @@ func TestGenerator_Decompose(t *testing.T) {
 
 func TestGenerator_NextID_Race(t *testing.T) {
 
-	g := New(Settings{
-		StartTime: time.Unix(1257894000, 0),
-		MachineID: func() (uint16, error) { return math.MaxUint16, nil },
-	})
+	g := indigo.New(
+		nil,
+		indigo.StartTime(time.Unix(1257894000, 0)),
+		indigo.MachineID(func() (uint16, error) { return math.MaxUint16, nil }),
+	)
 
 	gs := 2048
 
@@ -95,12 +100,11 @@ func TestGenerator_NextID_SortIDs(t *testing.T) {
 		go func(mm uint16) {
 			defer wg.Done()
 
-			g := New(Settings{
-				StartTime: time.Unix(1257894000, 0),
-				MachineID: func() (uint16, error) {
-					return mm, nil
-				},
-			})
+			g := indigo.New(
+				nil,
+				indigo.StartTime(time.Unix(1257894000, 0)),
+				indigo.MachineID(func() (uint16, error) { return mm, nil }),
+			)
 
 			r := rand.New(rand.NewSource(time.Now().UnixNano()))
 
@@ -127,10 +131,11 @@ func TestGenerator_NextID_SortIDs(t *testing.T) {
 	sort.Strings(ids)
 	require.NotEqual(t, old, ids)
 
-	g := New(Settings{
-		StartTime: time.Unix(1257894000, 0),
-		MachineID: func() (uint16, error) { return math.MaxUint16, nil },
-	})
+	g := indigo.New(
+		nil,
+		indigo.StartTime(time.Unix(1257894000, 0)),
+		indigo.MachineID(func() (uint16, error) { return math.MaxUint16, nil }),
+	)
 
 	var prev uint64
 	for i := range ids {
@@ -143,10 +148,11 @@ func TestGenerator_NextID_SortIDs(t *testing.T) {
 
 func BenchmarkGenerator_NextID(b *testing.B) {
 
-	g := New(Settings{
-		StartTime: time.Now(),
-		MachineID: func() (uint16, error) { return math.MaxUint16, nil },
-	})
+	g := indigo.New(
+		nil,
+		indigo.StartTime(time.Now()),
+		indigo.MachineID(func() (uint16, error) { return math.MaxUint16, nil }),
+	)
 
 	b.ReportAllocs()
 	b.ResetTimer()
@@ -163,12 +169,11 @@ func BenchmarkGenerator_NextID(b *testing.B) {
 
 func ExampleGenerator_NextID() {
 	const machineID = 65535
-	g := New(Settings{
-		StartTime: time.Now(),
-		MachineID: func() (uint16, error) {
-			return machineID, nil
-		},
-	})
+	g := indigo.New(
+		nil,
+		indigo.StartTime(time.Now()),
+		indigo.MachineID(func() (uint16, error) { return machineID, nil }),
+	)
 	id, err := g.NextID()
 	if err != nil {
 		panic(err)

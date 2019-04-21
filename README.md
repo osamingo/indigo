@@ -37,10 +37,8 @@ import (
 var g *indigo.Generator
 
 func init() {
-	g = indigo.New(indigo.Settings{
-		// 2009-11-10 23:00:00 UTC
-		StartTime: time.Unix(1257894000, 0),
-	})
+	t := time.Unix(1257894000, 0) // 2009-11-10 23:00:00 UTC
+	g = indigo.New(nil, indigo.StartTime(t))
 	_, err := g.NextID()
 	if err != nil {
 		log.Fatalln(err)
@@ -70,24 +68,24 @@ func main() {
 ## Benchmark
 
 ```
-# Machine: MacBook Pro (Retina, 15-inch, Mid 2015)
-# CPU    : 2.8 GHz Intel Core i7
-# Memory : 16 GB 1600 MHz DDR3
+# Machine: MacBook Pro (13-inch, 2018, Four Thunderbolt 3 Ports)
+# CPU    : 2.7 GHz Intel Core i7
+# Memory : 16 GB 2133 MHz LPDDR3
 
-BenchmarkEncoder_Encode-8       20000000         107 ns/op      46 B/op     1 allocs/op
-BenchmarkEncoder_Decode-8       30000000        46.8 ns/op       0 B/op     0 allocs/op
+BenchmarkEncoder_Encode-8       20000000        66.0 ns/op       46 B/op     1 allocs/op
+BenchmarkEncoder_Decode-8       50000000        29.8 ns/op        0 B/op     0 allocs/op
 PASS
-ok      github.com/osamingo/indigo/base58       3.730s
+ok      github.com/osamingo/indigo/base58       2.930s
 ```
 
 ```
-# Machine: MacBook Pro (Retina, 15-inch, Mid 2015)
-# CPU    : 2.8 GHz Intel Core i7
-# Memory : 16 GB 1600 MHz DDR3
+# Machine: MacBook Pro (13-inch, 2018, Four Thunderbolt 3 Ports)
+# CPU    : 2.7 GHz Intel Core i7
+# Memory : 16 GB 2133 MHz LPDDR3
 
-BenchmarkGenerator_NextID-8     50000          39221 ns/op       7 B/op     1 allocs/op
+BenchmarkGenerator_NextID-8        50000       39175 ns/op        7 B/op     1 allocs/op
 PASS
-ok      github.com/osamingo/indigo      9.679s
+ok      github.com/osamingo/indigo      8.548s
 ```
 
 ## Bibliography

@@ -1,3 +1,6 @@
+/*
+Package base58 implements indigo.Encoder interface.
+*/
 package base58
 
 import (
@@ -11,8 +14,10 @@ type Encoder struct {
 	decodeMap [256]int
 }
 
-// StdEncoding is Base58 Encoder.
-var StdEncoding = MustNewEncoder("123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz")
+// StdSource returns standard base58 characters.
+func StdSource() string {
+	return "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
+}
 
 // MustNewEncoder returns new base58.Encoder.
 func MustNewEncoder(source string) *Encoder {
