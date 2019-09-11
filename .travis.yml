@@ -4,12 +4,13 @@ language: go
 go:
   - 1.11.x
   - 1.12.x
+  - 1.13.x
 
 before_install:
-  - go get -u github.com/golang/dep/cmd/dep github.com/golangci/golangci-lint/cmd/golangci-lint
+  - curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh| sh -s -- -b $(go env GOPATH)/bin v1.18.0
 
 install:
-  - dep ensure
+  - GO111MODULE=on go mod vendor
 
 before_script:
   - golangci-lint run ./...
