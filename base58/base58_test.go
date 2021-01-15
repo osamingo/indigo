@@ -17,7 +17,6 @@ func TestStdSource(t *testing.T) {
 }
 
 func TestMustNewEncoder(t *testing.T) {
-
 	enc := base58.MustNewEncoder("rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz")
 	if enc == nil {
 		t.Error("should not be nil")
@@ -25,7 +24,9 @@ func TestMustNewEncoder(t *testing.T) {
 
 	func() {
 		defer func() {
-			recover()
+			if err := recover(); err == nil {
+				t.Error("should not be nil")
+			}
 		}()
 		base58.MustNewEncoder("")
 		t.Error("should be panic")
@@ -33,7 +34,9 @@ func TestMustNewEncoder(t *testing.T) {
 
 	func() {
 		defer func() {
-			recover()
+			if err := recover(); err == nil {
+				t.Error("should not be nil")
+			}
 		}()
 		base58.MustNewEncoder("test")
 		t.Error("should be panic")
@@ -41,7 +44,6 @@ func TestMustNewEncoder(t *testing.T) {
 }
 
 func TestNewEncoder(t *testing.T) {
-
 	enc, err := base58.NewEncoder("rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz")
 	if err != nil {
 		t.Error("should be nil")
@@ -62,7 +64,6 @@ func TestNewEncoder(t *testing.T) {
 }
 
 func TestEncoder_Encode(t *testing.T) {
-
 	bc := map[uint64]string{
 		0:              "1",
 		57:             "z",
@@ -86,7 +87,6 @@ func TestEncoder_Encode(t *testing.T) {
 }
 
 func TestEncoder_Decode(t *testing.T) {
-
 	bc := map[uint64]string{
 		0:              "1",
 		57:             "z",
@@ -119,7 +119,6 @@ func TestEncoder_Decode(t *testing.T) {
 }
 
 func BenchmarkEncoder_Encode(b *testing.B) {
-
 	s := rand.New(rand.NewSource(time.Now().UnixNano()))
 	enc := base58.MustNewEncoder(base58.StdSource())
 
@@ -131,7 +130,6 @@ func BenchmarkEncoder_Encode(b *testing.B) {
 }
 
 func BenchmarkEncoder_Decode(b *testing.B) {
-
 	bc := map[uint64]string{
 		0:              "1",
 		57:             "z",

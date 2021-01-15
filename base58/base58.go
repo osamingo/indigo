@@ -8,9 +8,11 @@ import (
 	"errors"
 )
 
+const characters = 58
+
 // An Encoder implements indigo.Encoder interface by Base58.
 type Encoder struct {
-	encode    [58]byte
+	encode    [characters]byte
 	decodeMap [256]int
 }
 
@@ -30,8 +32,7 @@ func MustNewEncoder(source string) *Encoder {
 
 // NewEncoder returns new base58.Encoder.
 func NewEncoder(source string) (*Encoder, error) {
-
-	if len(source) != 58 {
+	if len(source) != characters {
 		return nil, errors.New("base58: encoding source is not 58-bytes long")
 	}
 
@@ -51,7 +52,6 @@ func NewEncoder(source string) (*Encoder, error) {
 
 // Encode returns encoded string by Base58.
 func (enc *Encoder) Encode(id uint64) string {
-
 	if id == 0 {
 		return string(enc.encode[:1])
 	}
@@ -59,7 +59,7 @@ func (enc *Encoder) Encode(id uint64) string {
 	bin := make([]byte, 0, binary.MaxVarintLen64)
 	for id > 0 {
 		bin = append(bin, enc.encode[id%58])
-		id /= 58
+		id /= characters
 	}
 
 	for i, j := 0, len(bin)-1; i < j; i, j = i+1, j-1 {
@@ -71,7 +71,6 @@ func (enc *Encoder) Encode(id uint64) string {
 
 // Decode returns decoded unsigned int64 by Base58.
 func (enc *Encoder) Decode(id string) (uint64, error) {
-
 	if id == "" {
 		return 0, errors.New("base58: id should not be empty")
 	}
@@ -82,7 +81,7 @@ func (enc *Encoder) Decode(id string) (uint64, error) {
 		if u < 0 {
 			return 0, errors.New("base58: invalid character - " + string(id[i]))
 		}
-		n = n*58 + uint64(u)
+		n = n*characters + uint64(u)
 	}
 
 	return n, nil

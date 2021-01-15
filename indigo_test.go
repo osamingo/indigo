@@ -27,7 +27,6 @@ func TestNew(t *testing.T) {
 }
 
 func TestGenerator_NextID(t *testing.T) {
-
 	g := indigo.New(
 		nil,
 		indigo.StartTime(time.Unix(1257894000, 0)),
@@ -58,7 +57,6 @@ func TestGenerator_NextID(t *testing.T) {
 }
 
 func TestGenerator_Decompose(t *testing.T) {
-
 	g := indigo.New(
 		nil,
 		indigo.StartTime(time.Unix(1257894000, 0)),
@@ -84,7 +82,6 @@ func TestGenerator_Decompose(t *testing.T) {
 }
 
 func TestGenerator_NextID_Race(t *testing.T) {
-
 	g := indigo.New(
 		nil,
 		indigo.StartTime(time.Unix(1257894000, 0)),
@@ -113,7 +110,6 @@ func TestGenerator_NextID_Race(t *testing.T) {
 }
 
 func TestGenerator_NextID_SortIDs(t *testing.T) {
-
 	th := 10
 	ids := make([]string, 0, 100)
 
@@ -182,7 +178,6 @@ func TestGenerator_NextID_SortIDs(t *testing.T) {
 }
 
 func BenchmarkGenerator_NextID(b *testing.B) {
-
 	g := indigo.New(
 		nil,
 		indigo.StartTime(time.Now()),
