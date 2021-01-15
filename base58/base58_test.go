@@ -7,42 +7,58 @@ import (
 	"time"
 
 	"github.com/osamingo/indigo/base58"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestStdSource(t *testing.T) {
-	require.Equal(t, base58.StdSource(), "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz")
+	const expect = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
+	if base58.StdSource() != expect {
+		t.Error("should be", expect)
+	}
 }
 
 func TestMustNewEncoder(t *testing.T) {
 
-	var enc *base58.Encoder
-	require.NotPanics(t, func() {
-		enc = base58.MustNewEncoder("rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz")
-	})
-	require.NotNil(t, enc)
+	enc := base58.MustNewEncoder("rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz")
+	if enc == nil {
+		t.Error("should not be nil")
+	}
 
-	require.Panics(t, func() {
+	func() {
+		defer func() {
+			recover()
+		}()
 		base58.MustNewEncoder("")
-	})
+		t.Error("should be panic")
+	}()
 
-	require.Panics(t, func() {
+	func() {
+		defer func() {
+			recover()
+		}()
 		base58.MustNewEncoder("test")
-	})
+		t.Error("should be panic")
+	}()
 }
 
 func TestNewEncoder(t *testing.T) {
 
 	enc, err := base58.NewEncoder("rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz")
-	require.NoError(t, err)
-	require.NotNil(t, enc)
+	if err != nil {
+		t.Error("should be nil")
+	}
+	if enc == nil {
+		t.Error("should not be nil")
+	}
 
 	_, err = base58.NewEncoder("")
-	require.Error(t, err)
+	if err == nil {
+		t.Error("should not be nil")
+	}
 
 	_, err = base58.NewEncoder("test")
-	require.Error(t, err)
+	if err == nil {
+		t.Error("should not be nil")
+	}
 }
 
 func TestEncoder_Encode(t *testing.T) {
@@ -58,10 +74,14 @@ func TestEncoder_Encode(t *testing.T) {
 
 	enc := base58.MustNewEncoder(base58.StdSource())
 	id := enc.Encode(0)
-	assert.Equal(t, "1", id)
+	if id != "1" {
+		t.Error("should be", "1")
+	}
 
 	for k, v := range bc {
-		assert.Equal(t, v, enc.Encode(k))
+		if enc.Encode(k) != v {
+			t.Error("should be", v)
+		}
 	}
 }
 
@@ -78,15 +98,23 @@ func TestEncoder_Decode(t *testing.T) {
 
 	enc := base58.MustNewEncoder(base58.StdSource())
 	_, err := enc.Decode("")
-	require.Error(t, err)
+	if err == nil {
+		t.Error("should not be nil")
+	}
 
 	_, err = enc.Decode("0")
-	require.Error(t, err)
+	if err == nil {
+		t.Error("should not be nil")
+	}
 
 	for k, v := range bc {
 		r, err := enc.Decode(v)
-		require.NoError(t, err)
-		assert.Equal(t, k, r)
+		if err != nil {
+			t.Error("should be nil")
+		}
+		if r != k {
+			t.Error("should be", k)
+		}
 	}
 }
 
