@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"math/rand"
+	"reflect"
 	"sort"
 	"sync"
 	"testing"
@@ -11,8 +12,6 @@ import (
 
 	"github.com/osamingo/indigo"
 	"github.com/osamingo/indigo/base58"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestNew(t *testing.T) {
@@ -22,7 +21,9 @@ func TestNew(t *testing.T) {
 		indigo.MachineID(func() (uint16, error) { return math.MaxUint16, nil }),
 		indigo.CheckMachineID(nil),
 	)
-	require.NotNil(t, g)
+	if g == nil {
+		t.Error("should not be nil")
+	}
 }
 
 func TestGenerator_NextID(t *testing.T) {
@@ -35,13 +36,25 @@ func TestGenerator_NextID(t *testing.T) {
 	)
 
 	id1, err := g.NextID()
-	require.NoError(t, err)
-	assert.NotEmpty(t, id1)
+	if err != nil {
+		t.Error("should be nil")
+	}
+	if id1 == "" {
+		t.Error("should not be empty")
+	}
 
 	id2, err := g.NextID()
-	require.NoError(t, err)
-	assert.NotEmpty(t, id2)
-	assert.NotEqual(t, id1, id2)
+	if err != nil {
+		t.Error("should be nil")
+	}
+
+	if id2 == "" {
+		t.Error("should not be empty")
+	}
+
+	if id1 == id2 {
+		t.Error("should not be equal")
+	}
 }
 
 func TestGenerator_Decompose(t *testing.T) {
@@ -54,12 +67,20 @@ func TestGenerator_Decompose(t *testing.T) {
 	)
 
 	m, err := g.Decompose("KGuFE14P")
-	require.NoError(t, err)
-	require.NotEmpty(t, m)
-	assert.NotEmpty(t, m["id"])
+	if err != nil {
+		t.Error("should be nil")
+	}
+	if len(m) == 0 {
+		t.Error("should not be empty")
+	}
+	if _, ok := m["id"]; !ok {
+		t.Error("should not be empty")
+	}
 
 	_, err = g.Decompose("")
-	require.Error(t, err)
+	if err == nil {
+		t.Error("should not be nil")
+	}
 }
 
 func TestGenerator_NextID_Race(t *testing.T) {
@@ -79,8 +100,12 @@ func TestGenerator_NextID_Race(t *testing.T) {
 		go func() {
 			defer wg.Done()
 			id, err := g.NextID()
-			require.NoError(t, err)
-			require.NotEmpty(t, id)
+			if err != nil {
+				t.Error("should be nil")
+			}
+			if id == "" {
+				t.Error("should not be empty")
+			}
 		}()
 	}
 
@@ -112,7 +137,9 @@ func TestGenerator_NextID_SortIDs(t *testing.T) {
 			for j := 0; j < th; j++ {
 				time.Sleep(10*time.Millisecond + time.Duration(r.Intn(1e9)))
 				id, err := g.NextID()
-				require.NoError(t, err)
+				if err != nil {
+					t.Error("should be nil")
+				}
 				s = append(s, id)
 			}
 
@@ -126,10 +153,14 @@ func TestGenerator_NextID_SortIDs(t *testing.T) {
 
 	old := make([]string, 100)
 	copy(old, ids)
-	require.Equal(t, old, ids)
+	if !reflect.DeepEqual(ids, old) {
+		t.Error("should be equal")
+	}
 
 	sort.Strings(ids)
-	require.NotEqual(t, old, ids)
+	if reflect.DeepEqual(ids, old) {
+		t.Error("should not be equal")
+	}
 
 	g := indigo.New(
 		nil,
@@ -140,8 +171,12 @@ func TestGenerator_NextID_SortIDs(t *testing.T) {
 	var prev uint64
 	for i := range ids {
 		m, err := g.Decompose(ids[i])
-		require.NoError(t, err)
-		require.True(t, prev <= m["time"])
+		if err != nil {
+			t.Error("should be nil")
+		}
+		if !(prev <= m["time"]) {
+			t.Error("should be true")
+		}
 		prev = m["time"]
 	}
 }
