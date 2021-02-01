@@ -59,6 +59,16 @@ func TestGenerator_NextID(t *testing.T) {
 	if id1 == id2 {
 		t.Error("should not be equal")
 	}
+
+	g = indigo.New(
+		nil,
+		indigo.StartTime(time.Unix(math.MinInt64, math.MinInt64)),
+		indigo.MachineID(func() (uint16, error) { return math.MaxUint16, nil }),
+	)
+
+	if _, err := g.NextID(); err == nil {
+		t.Error("should not be nil")
+	}
 }
 
 func TestGenerator_Decompose(t *testing.T) {
