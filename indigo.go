@@ -6,9 +6,10 @@ More information: https://github.com/osamingo/indigo/blob/master/README.md
 package indigo
 
 import (
+	"fmt"
 	"time"
 
-	"github.com/osamingo/indigo/base58"
+	"github.com/osamingo/base58"
 	"github.com/sony/sonyflake"
 )
 
@@ -28,12 +29,15 @@ type (
 // New settings new a indigo.Generator.
 func New(enc Encoder, options ...func(*sonyflake.Settings)) *Generator {
 	if enc == nil {
-		enc = base58.MustNewEncoder(base58.StdSource())
+		enc = base58.MustNewEncoder(base58.StandardSource)
 	}
+
 	s := sonyflake.Settings{}
+
 	for i := range options {
 		options[i](&s)
 	}
+
 	return &Generator{
 		sf:  sonyflake.NewSonyflake(s),
 		enc: enc,
@@ -65,8 +69,9 @@ func CheckMachineID(f func(uint16) bool) func(*sonyflake.Settings) {
 func (g *Generator) NextID() (string, error) {
 	n, err := g.sf.NextID()
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("indigo: failed to generate next id: %w", err)
 	}
+
 	return g.enc.Encode(n), nil
 }
 
@@ -74,7 +79,8 @@ func (g *Generator) NextID() (string, error) {
 func (g *Generator) Decompose(id string) (map[string]uint64, error) {
 	b, err := g.enc.Decode(id)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("indigo: failed to decode, id = %s: %w", id, err)
 	}
+
 	return sonyflake.Decompose(b), nil
 }

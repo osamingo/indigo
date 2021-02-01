@@ -11,13 +11,12 @@
 ## About
 
 - A distributed unique ID generator of using Sonyflake and encoded by Base58.
-- Base58 logic is optimized unsigned int64.
 - ID max length is 11 characters by unsigned int64 max value.
 - An Encoder can change your original encoder ;)
 
 ## Install
 
-```bash
+```shell
 $ go get -u github.com/osamingo/indigo
 ```
 
@@ -72,20 +71,13 @@ func main() {
 # CPU    : 2.7 GHz Intel Core i7
 # Memory : 16 GB 2133 MHz LPDDR3
 
-BenchmarkEncoder_Encode-8       20000000        66.0 ns/op       46 B/op     1 allocs/op
-BenchmarkEncoder_Decode-8       50000000        29.8 ns/op        0 B/op     0 allocs/op
+goos: darwin
+goarch: amd64
+pkg: github.com/osamingo/indigo
+BenchmarkGenerator_NextID-8        30136       39099 ns/op        7 B/op     1 allocs/op
 PASS
-ok      github.com/osamingo/indigo/base58       2.930s
-```
+ok      github.com/osamingo/indigo      9.149s
 
-```
-# Machine: MacBook Pro (13-inch, 2018, Four Thunderbolt 3 Ports)
-# CPU    : 2.7 GHz Intel Core i7
-# Memory : 16 GB 2133 MHz LPDDR3
-
-BenchmarkGenerator_NextID-8        50000       39175 ns/op        7 B/op     1 allocs/op
-PASS
-ok      github.com/osamingo/indigo      8.548s
 ```
 
 ## Bibliography

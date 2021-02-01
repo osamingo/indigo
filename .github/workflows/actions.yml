@@ -18,7 +18,7 @@ jobs:
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v2
         with:
-          version: v1.28.3
+          version: v1.36.0
   test:
     name: Test
     runs-on: ubuntu-latest
@@ -36,7 +36,3 @@ jobs:
         run: go test -covermode=atomic -coverprofile=coverage.txt ./...
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v1
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          file: coverage.txt
-          yml: codecov.yml

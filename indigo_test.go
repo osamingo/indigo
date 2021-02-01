@@ -10,13 +10,15 @@ import (
 	"testing"
 	"time"
 
+	"github.com/osamingo/base58"
 	"github.com/osamingo/indigo"
-	"github.com/osamingo/indigo/base58"
 )
 
 func TestNew(t *testing.T) {
+	t.Parallel()
+
 	g := indigo.New(
-		base58.MustNewEncoder(base58.StdSource()),
+		base58.MustNewEncoder(base58.StandardSource),
 		indigo.StartTime(time.Unix(1257894000, 0)),
 		indigo.MachineID(func() (uint16, error) { return math.MaxUint16, nil }),
 		indigo.CheckMachineID(nil),
@@ -27,6 +29,8 @@ func TestNew(t *testing.T) {
 }
 
 func TestGenerator_NextID(t *testing.T) {
+	t.Parallel()
+
 	g := indigo.New(
 		nil,
 		indigo.StartTime(time.Unix(1257894000, 0)),
@@ -38,6 +42,7 @@ func TestGenerator_NextID(t *testing.T) {
 	if err != nil {
 		t.Error("should be nil")
 	}
+
 	if id1 == "" {
 		t.Error("should not be empty")
 	}
@@ -57,6 +62,8 @@ func TestGenerator_NextID(t *testing.T) {
 }
 
 func TestGenerator_Decompose(t *testing.T) {
+	t.Parallel()
+
 	g := indigo.New(
 		nil,
 		indigo.StartTime(time.Unix(1257894000, 0)),
@@ -68,9 +75,11 @@ func TestGenerator_Decompose(t *testing.T) {
 	if err != nil {
 		t.Error("should be nil")
 	}
+
 	if len(m) == 0 {
 		t.Error("should not be empty")
 	}
+
 	if _, ok := m["id"]; !ok {
 		t.Error("should not be empty")
 	}
@@ -82,6 +91,8 @@ func TestGenerator_Decompose(t *testing.T) {
 }
 
 func TestGenerator_NextID_Race(t *testing.T) {
+	t.Parallel()
+
 	g := indigo.New(
 		nil,
 		indigo.StartTime(time.Unix(1257894000, 0)),
@@ -89,17 +100,19 @@ func TestGenerator_NextID_Race(t *testing.T) {
 	)
 
 	gs := 2048
+	wg := sync.WaitGroup{}
 
-	var wg sync.WaitGroup
 	wg.Add(gs)
 
 	for i := 0; i < gs; i++ {
 		go func() {
 			defer wg.Done()
+
 			id, err := g.NextID()
 			if err != nil {
 				t.Error("should be nil")
 			}
+
 			if id == "" {
 				t.Error("should not be empty")
 			}
@@ -110,6 +123,8 @@ func TestGenerator_NextID_Race(t *testing.T) {
 }
 
 func TestGenerator_NextID_SortIDs(t *testing.T) {
+	t.Parallel()
+
 	th := 10
 	ids := make([]string, 0, 100)
 
@@ -128,14 +143,16 @@ func TestGenerator_NextID_SortIDs(t *testing.T) {
 			)
 
 			r := rand.New(rand.NewSource(time.Now().UnixNano()))
-
 			s := make([]string, 0, th)
+
 			for j := 0; j < th; j++ {
 				time.Sleep(10*time.Millisecond + time.Duration(r.Intn(1e9)))
+
 				id, err := g.NextID()
 				if err != nil {
 					t.Error("should be nil")
 				}
+
 				s = append(s, id)
 			}
 
@@ -149,11 +166,13 @@ func TestGenerator_NextID_SortIDs(t *testing.T) {
 
 	old := make([]string, 100)
 	copy(old, ids)
+
 	if !reflect.DeepEqual(ids, old) {
 		t.Error("should be equal")
 	}
 
 	sort.Strings(ids)
+
 	if reflect.DeepEqual(ids, old) {
 		t.Error("should not be equal")
 	}
@@ -165,14 +184,17 @@ func TestGenerator_NextID_SortIDs(t *testing.T) {
 	)
 
 	var prev uint64
+
 	for i := range ids {
 		m, err := g.Decompose(ids[i])
 		if err != nil {
 			t.Error("should be nil")
 		}
+
 		if !(prev <= m["time"]) {
 			t.Error("should be true")
 		}
+
 		prev = m["time"]
 	}
 }
@@ -186,11 +208,13 @@ func BenchmarkGenerator_NextID(b *testing.B) {
 
 	b.ReportAllocs()
 	b.ResetTimer()
+
 	for i := 0; i < b.N; i++ {
 		id, err := g.NextID()
 		if err != nil {
 			b.Fatal(err)
 		}
+
 		if id == "" {
 			b.Fatal("generate id is empty")
 		}
@@ -199,21 +223,25 @@ func BenchmarkGenerator_NextID(b *testing.B) {
 
 func ExampleGenerator_NextID() {
 	const machineID = 65535
+
 	g := indigo.New(
 		nil,
 		indigo.StartTime(time.Now()),
 		indigo.MachineID(func() (uint16, error) { return machineID, nil }),
 	)
+
 	id, err := g.NextID()
 	if err != nil {
 		panic(err)
 	}
+
 	fmt.Println(id)
 
 	m, err := g.Decompose(id)
 	if err != nil {
 		panic(err)
 	}
+
 	fmt.Println(m["machine-id"])
 	// output:
 	// 2VKmG
