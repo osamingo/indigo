@@ -76,8 +76,6 @@ goarch: amd64
 pkg: github.com/osamingo/indigo
 BenchmarkGenerator_NextID-8        30136       39099 ns/op        7 B/op     1 allocs/op
 PASS
-ok      github.com/osamingo/indigo      9.149s
-
 ```
 
 ## Bibliography
