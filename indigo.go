@@ -32,14 +32,14 @@ func New(enc Encoder, options ...func(*sonyflake.Settings)) *Generator {
 		enc = base58.MustNewEncoder(base58.StandardSource)
 	}
 
-	s := sonyflake.Settings{}
+	var settings sonyflake.Settings
 
 	for i := range options {
-		options[i](&s)
+		options[i](&settings)
 	}
 
 	return &Generator{
-		sf:  sonyflake.NewSonyflake(s),
+		sf:  sonyflake.NewSonyflake(settings),
 		enc: enc,
 	}
 }
