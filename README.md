@@ -17,7 +17,7 @@
 ## Install
 
 ```shell
-$ go get -u github.com/osamingo/indigo
+$ go get github.com/osamingo/indigo@latest
 ```
 
 ## Usage
@@ -67,14 +67,14 @@ func main() {
 ## Benchmark
 
 ```
-# Machine: MacBook Pro (13-inch, 2018, Four Thunderbolt 3 Ports)
-# CPU    : 2.7 GHz Intel Core i7
-# Memory : 16 GB 2133 MHz LPDDR3
+# Machine: MacBook Pro (14-inch, 2021)
+# CPU    : Apple M1 Pro
+# Memory : 32 GB
 
 goos: darwin
-goarch: amd64
+goarch: arm64
 pkg: github.com/osamingo/indigo
-BenchmarkGenerator_NextID-8        30136       39099 ns/op        7 B/op     1 allocs/op
+BenchmarkGenerator_NextID-10        30079       39191 ns/op        7 B/op     1 allocs/op
 PASS
 ```
 
