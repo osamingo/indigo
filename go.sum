@@ -1,4 +1,4 @@
 github.com/osamingo/base58 v1.0.0 h1:NhsHxeyMRaD5Li67LgdZG+4/rlyaNr9rVqYQxNGLOYg=
 github.com/osamingo/base58 v1.0.0/go.mod h1:nADsGCd4fm122SrLUaut+PhzCVwyvchAgxxBVDS5Wf8=
-github.com/sony/sonyflake v1.0.1-0.20200827011719-848d664ceea4 h1:KPf4aWX4JGEdMICunm9A0YTFbD6OL23G14BR7cL/0wg=
-github.com/sony/sonyflake v1.0.1-0.20200827011719-848d664ceea4/go.mod h1:LORtCywH/cq10ZbyfhKrHYgAUGH7mOBa76enV9txy/Y=
+github.com/sony/sonyflake v1.1.0 h1:wnrEcL3aOkWmPlhScLEGAXKkLAIslnBteNUq4Bw6MM4=
+github.com/sony/sonyflake v1.1.0/go.mod h1:LORtCywH/cq10ZbyfhKrHYgAUGH7mOBa76enV9txy/Y=

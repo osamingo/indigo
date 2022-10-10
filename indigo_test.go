@@ -231,7 +231,7 @@ func BenchmarkGenerator_NextID(b *testing.B) {
 	}
 }
 
-func ExampleGenerator_NextID() {
+func ExampleGenerator_NextID() { //nolint: nosnakecase
 	const machineID = 65535
 
 	g := indigo.New(
