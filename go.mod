@@ -1,6 +1,8 @@
 module github.com/osamingo/indigo
 
-go 1.18
+go 1.24
+
+toolchain go1.24.1
 
 require (
 	github.com/osamingo/base58 v1.0.0

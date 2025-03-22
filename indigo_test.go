@@ -114,7 +114,7 @@ func TestGenerator_NextID_Race(t *testing.T) {
 
 	wg.Add(gs)
 
-	for i := 0; i < gs; i++ {
+	for range gs {
 		go func() {
 			defer wg.Done()
 
@@ -142,20 +142,20 @@ func TestGenerator_NextID_SortIDs(t *testing.T) {
 	wg := sync.WaitGroup{}
 	wg.Add(th)
 
-	for i := 0; i < th; i++ {
-		go func(mm uint16) {
+	for i := range th {
+		go func(mm int) {
 			defer wg.Done()
 
 			g := indigo.New(
 				nil,
 				indigo.StartTime(time.Unix(1257894000, 0)),
-				indigo.MachineID(func() (uint16, error) { return mm, nil }),
+				indigo.MachineID(func() (uint16, error) { return uint16(mm), nil }),
 			)
 
 			r := rand.New(rand.NewSource(time.Now().UnixNano()))
 			s := make([]string, 0, th)
 
-			for j := 0; j < th; j++ {
+			for range th {
 				time.Sleep(10*time.Millisecond + time.Duration(r.Intn(1e9)))
 
 				id, err := g.NextID()
@@ -169,7 +169,7 @@ func TestGenerator_NextID_SortIDs(t *testing.T) {
 			m.Lock()
 			ids = append(ids, s...)
 			m.Unlock()
-		}(uint16(i + 1))
+		}(i + 1)
 	}
 
 	wg.Wait()
@@ -219,7 +219,7 @@ func BenchmarkGenerator_NextID(b *testing.B) {
 	b.ReportAllocs()
 	b.ResetTimer()
 
-	for i := 0; i < b.N; i++ {
+	for range b.N {
 		id, err := g.NextID()
 		if err != nil {
 			b.Fatal(err)
