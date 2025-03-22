@@ -1,12 +1,14 @@
 linters-settings:
   errcheck:
-    check-type-asserts: true
+    check-type-assertions: true
     check-blank: true
   misspell:
     locale: US
 
 linters:
   enable-all: true
+  disable:
+    - depguard
 
 issues:
   exclude-rules:
@@ -15,7 +17,12 @@ issues:
       linters:
         - gosec
     - path: _test\.go
+      text: "G115:"
+      linters:
+        - gosec
+    - path: _test\.go
       linters:
         - funlen
         - forbidigo
         - varnamelen
+        - depguard

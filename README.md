@@ -1,6 +1,6 @@
 # Indigo
 
-[![GitHub Actions](https://github.com/osamingo/indigo/workflows/CI/badge.svg?branch=master)](https://github.com/osamingo/indigo/actions?query=workflow%3ACI+branch%3Amaster)
+[![CI](https://github.com/osamingo/indigo/actions/workflows/actions.yml/badge.svg)](https://github.com/osamingo/indigo/actions/workflows/actions.yml)
 [![codecov](https://codecov.io/gh/osamingo/indigo/branch/master/graph/badge.svg)](https://codecov.io/gh/osamingo/indigo)
 [![Go Report Card](https://goreportcard.com/badge/osamingo/indigo)](https://goreportcard.com/report/osamingo/indigo)
 [![codebeat badge](https://codebeat.co/badges/3885a5d8-7db0-4162-970a-577a1bf54199)](https://codebeat.co/projects/github-com-osamingo-indigo)

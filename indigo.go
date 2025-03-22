@@ -16,8 +16,8 @@ import (
 type (
 	// An Encoder has Encode and Decode methods.
 	Encoder interface {
-		Encode(uint64) string
-		Decode(string) (uint64, error)
+		Encode(i uint64) string
+		Decode(s string) (uint64, error)
 	}
 	// A Generator has sonyflake and encoder.
 	Generator struct {
